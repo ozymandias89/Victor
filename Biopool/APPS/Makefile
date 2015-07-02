@@ -27,13 +27,13 @@ INC_PATH = -I. -I../../tools/ -I../../Biopool/Sources -I../../Energy/Sources -I.
 #
 
 SOURCES =   PdbCorrector.cc PdbSecondary.cc PdbEditor.cc Pdb2Seq.cc pdb2secondary.cc pdbshifter.cc \
-	pdbMover.cc mobi.cc
+	pdbMover.cc
 
 OBJECTS =   PdbCorrector.o PdbSecondary.o PdbEditor.o Pdb2Seq.o pdb2secondary.o pdbshifter.o \
-	pdbMover.o mobi.o
+	pdbMover.o
 
 TARGETS = PdbCorrector PdbSecondary PdbEditor Pdb2Seq pdb2secondary pdbshifter \
-	pdbMover mobi
+	pdbMover
 
 EXECS = PdbCorrector PdbSecondary PdbEditor Pdb2Seq pdb2secondary pdbshifter \
 	pdbMover
