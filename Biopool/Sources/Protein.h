@@ -68,7 +68,7 @@ namespace Victor { namespace Biopool {
         void deleteComponent(Component* c);
 
         void copy(const Protein& orig);
-        void load(Loader& l); // data loader                 
+        virtual void load(Loader& l); // data loader
 
         virtual Protein* clone();
 

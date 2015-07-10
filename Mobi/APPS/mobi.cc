@@ -28,10 +28,9 @@
 
 
  #include <ProteinModels.h>
- #include <PdbSaver.h>
+ #include <TmScore.h>
  #include <string>
  #include <GetArg.h>
- #include <Debug.h>
  
 
   using namespace Victor;
@@ -86,7 +85,7 @@
 	 }
 
 
-	 cout << "Welcome to Mobi!" << endl;
+	cout << "Welcome to Mobi!" << endl;
 
 	 //loan pdb file from input
 	 inputFile = argv[1];
@@ -104,7 +103,7 @@
      PdbLoader pl(inFile);    // creates the PdbLoader object
 
      ProteinModels prot;
-//     Protein prot;
+    // Protein prot;
 
      if (v){
     	 pl.setVerbose();
@@ -138,17 +137,31 @@
 //    	 cout << "22" << endl;
      }
 
-
-     /////////////////////////////////////////////////////////////////////
-
      if (outputFile != "!"){
-    	outputFile="/home/riccardo/Victor/Mobi/data/" + outputFile;
-  	  }	else outputFile="/home/riccardo/Victor/Mobi/data/stdout";
+    	outputFile="./Mobi/data/" + outputFile;
+  	  }	else outputFile="./Mobi/data/stdout";
 
 
-     // Open the proper output stream (file or stdout)
-
+     // Mi salvo i vari modelli
        prot.save(prot, outputFile);
+
+
+
+       /////////////////////////////////////////////////////////////////////
+
+       TmScore tm("./Mobi/data/TMscore", outputFile, v);
+//
+//       Spacer sp;
+//       //for (unsigned int i=0; i<prot.size(); i++)
+//    	 //  for (unsigned int j=0; j<prot.size(); j++)
+//    		//   if (i!=j){
+//    			//   cout << outputFile + (itosDEF(i)) << outputFile + (itosDEF(j)) << endl;
+//    			//   tm.TmImpose(outputFile + (itosDEF(i)), outputFile + (itosDEF(j)));
+//       	   	   	   tm.TmImpose(outputFile + (itosDEF(0)), outputFile + (itosDEF(1)));
+//    			   sp=*(tm.spacerFromTMOutput(tm.outputTmScore + "_atm"));
+//    			   prot.models.push_back(sp);
+//    			   cout << prot.models.size()<< endl;
+//    		//}
 
        return 0;
   }

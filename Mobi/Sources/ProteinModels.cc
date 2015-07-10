@@ -7,7 +7,7 @@ using namespace Victor;
 using namespace Victor::Mobi;
 using namespace Victor::Biopool;
 
-
+const string PDB = ".pdb";
 
 ProteinModels::ProteinModels() : Protein(), verbose(false) {}
 
@@ -32,6 +32,7 @@ void ProteinModels::load(PdbLoader& pl) {
 		pl.setModel(i);
 		pl.checkModel();
 		this->Protein::load(pl);
+		models.push_back(*(this->getSpacer(i-1)));
 	}
 }
 
@@ -85,12 +86,45 @@ void ProteinModels::loadSameModels(PdbLoader& pl){
  		    	 pl.setModel(i);		  //dal pdb loader scelgo il modello da caricare nella proteina
  		    	 pl.checkModel();
  		    	 this->Protein::load(pl);          // creates the Protein object
+ 		    	 models.push_back(*(this->getSpacer(i-1)));
  		     }
- 		     cout << "modelli caricati nella proteina" << endl;
+ 		 cout << "\n" << "Modelli caricati nella proteina" << endl;
 
  }
 
-
+/*procedura che stampa su file il vettore di spacer*/
+//void ProteinModels::save(ProteinModels& prot, string outputFile){
+//
+//	ofstream fout;			//stream in output
+//	string outputFile_1;
+//	PdbSaver ps(fout);
+//
+//	unsigned int i = 0;
+//
+//	vector<Spacer>::iterator walk = models.begin();
+//	while (walk != models.end()) {
+//
+//		outputFile_1 = outputFile + (itosDEF(i)) + PDB;
+//		if (verbose)
+//			cout << outputFile_1 << endl;
+//
+//		fout.open(outputFile_1.c_str());
+//		if (!fout) {
+//			ERROR("Could not open file for writing.", exception);
+//		} else {
+//
+//			ps.saveSpacer(*walk);
+//			walk++;
+//			i++;
+//			ps.endFile();
+//			fout.close();
+//
+//			if (verbose)
+//				cout << "file chiuso" << endl;
+//		}
+//	}
+//
+//}
 
 void ProteinModels::save(ProteinModels& prot, string outputFile){
 
@@ -102,7 +136,7 @@ void ProteinModels::save(ProteinModels& prot, string outputFile){
 	for (unsigned int i = 0; i < prot.size(); i++) {
 
 
-		outputFile_1 = outputFile + (itosDEF(i)) + ".pdb";
+		outputFile_1 = outputFile + (itosDEF(i)) + PDB;
 
 		if (verbose)
 			cout << outputFile_1 << endl;
@@ -121,4 +155,10 @@ void ProteinModels::save(ProteinModels& prot, string outputFile){
 			cout << "file chiuso" << endl;
 	}
 
+}
+
+
+
+vector<Spacer> ProteinModels::getModels() {
+	return this->models;
 }

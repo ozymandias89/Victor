@@ -41,7 +41,7 @@ public:
 
 	ProteinModels(const Protein& _orig);
 
-	~ProteinModels();
+	virtual ~ProteinModels();
 
 
 
@@ -49,7 +49,7 @@ public:
 
 	//void load(PdbLoader& pl, char chain, vector<unsigned int> models);
 
-	void load(PdbLoader& pl);
+	virtual void load(PdbLoader& pl);
 
 	unsigned int selectModels(PdbLoader& pl);
 
@@ -64,10 +64,13 @@ public:
 	}
 
 	void save(ProteinModels& prot, string outputFile);
-// MODIFIERS:
+
+	vector <Spacer> getModels();
+
+	// MODIFIERS:
 private:
 	bool verbose;
-
+	vector <Spacer> models;
 
 };
 }
