@@ -33,8 +33,6 @@ using namespace Victor::Mobi;
 using namespace Victor::Biopool;
 using namespace std;
 
-const string TMTMP_IN1 = "tmin1.pdb";
-const string TMTMP_IN2 = "tmin2.pdb";
 const string TMTMP_OUT = "TMScore.pdb";
 
 

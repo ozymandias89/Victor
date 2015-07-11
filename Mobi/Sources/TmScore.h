@@ -92,7 +92,7 @@ public:
 	 */
 	~TmScore();
 
-public:
+private:
 	string binary;
 	const string outputTmScore;
 	bool verbose;

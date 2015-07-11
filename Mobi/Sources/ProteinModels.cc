@@ -33,6 +33,9 @@ void ProteinModels::load(PdbLoader& pl) {
 		pl.checkModel();
 		this->Protein::load(pl);
 	}
+	if (verbose)
+	 		 cout << "\n" << "Modelli caricati nella proteina" << endl;
+
 }
 
 
@@ -86,45 +89,47 @@ void ProteinModels::loadSameModels(PdbLoader& pl){
  		    	 pl.checkModel();
  		    	 this->Protein::load(pl);          // creates the Protein object
  		     }
+ 		 if (verbose)
  		 cout << "\n" << "Modelli caricati nella proteina" << endl;
 
  }
 
 /*procedura che stampa su file il vettore di spacer*/
-//void ProteinModels::save(ProteinModels& prot, string outputFile){
-//
-//	ofstream fout;			//stream in output
-//	string outputFile_1;
-//	PdbSaver ps(fout);
-//
-//	unsigned int i = 0;
-//
-//	vector<Spacer>::iterator walk = models.begin();
-//	while (walk != models.end()) {
-//
-//		outputFile_1 = outputFile + (itosDEF(i)) + PDB;
-//		if (verbose)
-//			cout << outputFile_1 << endl;
-//
-//		fout.open(outputFile_1.c_str());
-//		if (!fout) {
-//			ERROR("Could not open file for writing.", exception);
-//		} else {
-//
-//			ps.saveSpacer(*walk);
-//			walk++;
-//			i++;
-//			ps.endFile();
-//			fout.close();
-//
-//			if (verbose)
-//				cout << "file chiuso" << endl;
-//		}
-//	}
-//
-//}
+void ProteinModels::printModels(string outputFile){
 
-void ProteinModels::save(ProteinModels& prot, string outputFile){
+	ofstream fout;			//stream in output
+	string outputFile_1;
+	PdbSaver ps(fout);
+	const string VECTOR = "Vector";
+
+	unsigned int i = 0;
+
+	vector<Spacer>::iterator walk = models.begin();
+	while (walk != models.end()) {
+
+		outputFile_1 = outputFile + VECTOR + (itosDEF(i)) + PDB;
+		if (verbose)
+			cout << outputFile_1 << endl;
+
+		fout.open(outputFile_1.c_str());
+		if (!fout) {
+			ERROR("Could not open file for writing.", exception);
+		} else {
+
+			ps.saveSpacer(*walk);
+			walk++;
+			i++;
+			ps.endFile();
+			fout.close();
+
+			if (verbose)
+				cout << "file chiuso" << endl;
+		}
+	}
+
+}
+
+void ProteinModels::save(string outputFile){
 
 	ofstream fout;			//stream in output
 	string outputFile_1;
@@ -133,7 +138,7 @@ void ProteinModels::save(ProteinModels& prot, string outputFile){
 	if (verbose)
 				cout << "Salvataggio dei modelli su file" << endl;
 	// Open the proper output stream (file or stdout)
-	for (unsigned int i = 0; i < prot.size(); i++) {
+	for (unsigned int i = 0; i < this->size(); i++) {
 
 
 		outputFile_1 = outputFile + (itosDEF(i)) + PDB;
@@ -146,7 +151,7 @@ void ProteinModels::save(ProteinModels& prot, string outputFile){
 		if (!fout) {
 			ERROR("Could not open file for writing.", exception);
 		} else
-			ps.saveSpacer(*(prot.getSpacer(i)));
+			ps.saveSpacer(*(this->getSpacer(i)));
 
 		ps.endFile();
 		fout.close();

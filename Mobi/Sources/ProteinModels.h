@@ -55,18 +55,18 @@ public:
 
 	void loadSameModels(PdbLoader& pl);
 
-	//Spacer& getModel(unsigned int _model);
-
 	// MODIFIERS:
 
 	void setVerbose() {
 		verbose = true;
 	}
 
-	void save(ProteinModels& prot, string outputFile);
+	void save(string outputFile);
 
 	vector <Spacer> getModels();
 	void addModels(Spacer& sp);
+
+	void printModels(string outputFile);
 
 	// MODIFIERS:
 private:
