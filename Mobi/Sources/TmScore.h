@@ -30,8 +30,6 @@ using namespace Victor::Mobi;
 using namespace std;
 
 
-extern const string TMTMP_IN1;
-extern const string TMTMP_IN2;
 extern const string TMTMP_OUT;
 
 

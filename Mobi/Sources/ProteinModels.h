@@ -21,7 +21,6 @@ along with Victor. If not, see <http://www.gnu.org/licenses/>.
 
 #include<Protein.h>
 #include<PdbLoader.h>
-#include<AtomCode.h>
 
 
 using namespace Victor::Biopool;
@@ -37,7 +36,7 @@ class ProteinModels : public Protein{
 public:
 
 	 // CONSTRUCTORS/DESTRUCTOR:
-	ProteinModels()	;
+	ProteinModels();
 
 	ProteinModels(const Protein& _orig);
 
