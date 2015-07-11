@@ -60,7 +60,8 @@ public:
 	 * @param nativeFile (string) full path to model#2 file
 	 * @param imposedModel(ProteinModel**) double pointer of type ProteinModel, as output
 	 */
-	void TmImpose(string modelFile, string nativeFile);//, ProteinModels** imposedModel);
+
+	Protein* TmImpose(string modelFile, string nativeFile);//, ProteinModels** imposedModel);
 	/**
 	 * @brief Given a ProteinModel call TMScore binary to superimpose two models contained in it.
 	 * The superimposed (rotated/traslated) model is then loaded in a ProteinModel using the double pointer provided.
@@ -77,7 +78,7 @@ public:
 //	 * @param pdbFile (string) full path to TMScore output
 //	 * @param imposedModel (ProteinModel**) double pointer of type PRoteinModel, as output
 //	 */
-	Spacer* spacerFromTMOutput(string pdbFile);
+	//Spacer* spacerFromTMOutput(string pdbFile);
 	/**
 //	 * Set verbosity.
 //	 * Verbosity is applied on PdbLoader instances.

@@ -31,6 +31,8 @@
  #include <TmScore.h>
  #include <string>
  #include <GetArg.h>
+ #include <PdbSaver.h>
+
  
 
   using namespace Victor;
@@ -150,14 +152,31 @@
        /////////////////////////////////////////////////////////////////////
 
        TmScore tm("./Mobi/data/TMscore", outputFile, v);
-//
-//       Spacer sp;
-//       //for (unsigned int i=0; i<prot.size(); i++)
-//    	 //  for (unsigned int j=0; j<prot.size(); j++)
-//    		//   if (i!=j){
-//    			//   cout << outputFile + (itosDEF(i)) << outputFile + (itosDEF(j)) << endl;
-//    			//   tm.TmImpose(outputFile + (itosDEF(i)), outputFile + (itosDEF(j)));
-//       	   	   	   tm.TmImpose(outputFile + (itosDEF(0)), outputFile + (itosDEF(1)));
+
+
+       Protein* sp = new Protein();
+
+//for (unsigned int i=0; i<prot.size(); i++)
+//for (unsigned int j=0; j<prot.size(); j++)
+//if (i!=j) {
+//	cout << outputFile + (itosDEF(i)) << outputFile + (itosDEF(j)) << endl;
+
+       sp=tm.TmImpose(outputFile + (itosDEF(0)), outputFile + (itosDEF(1)));
+
+
+
+	if (sp != NULL) {
+
+		ofstream pippo;			//stream in output
+
+		unsigned int d = 0;
+		PdbSaver ps(pippo);
+		pippo.open((outputFile + "111").c_str());
+		ps.saveSpacer(*(sp->getSpacer(d)));
+		ps.endFile();
+		pippo.close();
+	}
+    			   //    			   tm.TmImpose(outputFile + (itosDEF(0)), outputFile + (itosDEF(1)));
 //    			   sp=*(tm.spacerFromTMOutput(tm.outputTmScore + "_atm"));
 //    			   prot.models.push_back(sp);
 //    			   cout << prot.models.size()<< endl;

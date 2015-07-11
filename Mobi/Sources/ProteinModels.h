@@ -66,6 +66,7 @@ public:
 	void save(ProteinModels& prot, string outputFile);
 
 	vector <Spacer> getModels();
+	void addModels(Spacer& sp);
 
 	// MODIFIERS:
 private:

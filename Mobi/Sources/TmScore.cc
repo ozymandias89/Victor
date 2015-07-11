@@ -21,15 +21,12 @@
  * @version 0.1
  */
 #include <TmScore.h>
-#include <PdbSaver.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <Debug.h>
 #include <stdio.h>
-#include <string>
-#include <iostream>
 #include <errno.h>
 
 using namespace Victor::Mobi;
@@ -52,11 +49,10 @@ TmScore::TmScore(string _binary, string output, bool verbose) :
 TmScore::~TmScore(){}
 
 
-void TmScore::TmImpose(string modelFile, string nativeFile) {
 
-//	double score = -1;
-//	string score_tmp;
+Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 
+	Protein* prot = NULL;
 	//se i file sono accessibili in lettura
 	if (access(modelFile.c_str(), R_OK) == 0
 			&& access(nativeFile.c_str(), R_OK) == 0) {
@@ -64,7 +60,8 @@ void TmScore::TmImpose(string modelFile, string nativeFile) {
 		//se l'eseguibile ha i permessi di esecuzione
 		if (access(binary.c_str(), X_OK) == 0) {
 			pid_t pid;
-			if (this->verbose) cout << "Accesso consentito." <<endl;
+			if (this->verbose)
+				cout << "Accesso consentito." << endl;
 			//Pipeing TMS output
 			int pipefd[2];
 			pipe(pipefd);
@@ -74,23 +71,198 @@ void TmScore::TmImpose(string modelFile, string nativeFile) {
 				ERROR("Unable to fork child process", error);
 			} else {
 				if (pid == 0) {
-					close(pipefd[0]);												//close input pipe
-					if (dup2(pipefd[1], 1)<0)
-						ERROR("Unable to redirect output TMScore",error);			//stdout
-					if (dup2(pipefd[1], 2)<0)
-						ERROR("Unable to redirect error output TMScore",error);		//stderr
-					close(pipefd[1]);												//close output pipe
-					if (this->verbose) cout << "Eseguo TMScore" <<endl;
+					close(pipefd[0]);						//close input pipe
+					if (dup2(pipefd[1], 1) < 0)
+						ERROR("Unable to redirect output TMScore", error);//stdout
+					if (dup2(pipefd[1], 2) < 0)
+						ERROR("Unable to redirect error output TMScore", error);//stderr
+					close(pipefd[1]);						//close output pipe
+					if (this->verbose)
+						cout << "Eseguo TMScore" << endl;
 					if (execl(binary.c_str(), binary.c_str(), modelFile.c_str(),
-							nativeFile.c_str(), "-o", outputTmScore.c_str(), NULL))
+							nativeFile.c_str(), "-o", outputTmScore.c_str(),
+							NULL))
 						ERROR("Unable to exec", error);
 				} else {
 					//Read output from child pipe
+
+					//////////////////////////////////////////////////////////////////////////
 					int status;
+
+//					ifstream inFile(nativeFile.c_str());
+//					ofstream out ((outputTmScore+"11111").c_str());
+//					stringstream buffer;
+//					string line;
+//
+//					if (verbose) {
+//						cout << "Conversione file native file per renderlo leggibile" << endl;
+//					}
+//					bool flag=false;
+//
+//					while (inFile) {
+//						line = readLine(inFile);
+//						if (line.substr(0, 6) == "ATOM  " && !flag) {
+//							buffer << "MODEL        1" << endl;
+//							out << "MODEL        1" << endl;
+//							buffer << line << endl;
+//							out << line << endl;
+//							flag=true;
+//							} else if (line.substr(0, 6) == "ATOM  " && flag) {
+//							buffer << line << endl;
+//							out << line << endl;
+//						} else if (line.substr(0, 3) == "TER") {
+//							buffer << line << endl;
+//							buffer << "ENDMDL" << endl;
+//							out << line << endl;
+//							out << "ENDMDL" << endl;
+//
+//							break;
+//						}
+//					}
+//					if (verbose) {
+//						cout << "Fine lettura file nativo" << endl;
+//					}
+//
+//					buffer.clear();
+//					out.close();
+//
+//					cout << "AAAAAAAAAAAAAAAAAAAAAAAA" << endl;
+//
+//					PdbLoader loader (buffer);
+//
+//				    if (!verbose)
+//				    	loader.setNoVerbose();
+//
+//				    loader.setModel(1);
+//				    cout << "BBBBBBBBBBBBBBBBBBBBBBBBBB" << endl;
+//				    loader.checkModel();
+//				    cout << "CCCCCCCCCCCCCCCCCCCCCCCCCCCCc" << endl;
+//					Protein temp;
+//					temp.load(loader);
+//					unsigned int d=0;
+//					sp[0]=*(temp.getSpacer(d));
+
 					wait(&status);
 
 					remove(outputTmScore.c_str());
-//					char buffer[2048];
+
+					if (access((outputTmScore + "_atm").c_str(), R_OK) != 0)
+						ERROR("Cannot read pdb file to fix", exception);
+
+					ifstream inFile((outputTmScore + "_atm").c_str());
+					stringstream buffer;
+					string line;
+
+					if (verbose) {
+						cout
+								<< "Conversione file rototraslato per renderlo leggibile"
+								<< endl;
+					}
+					while (inFile) {
+						line = readLine(inFile);
+						if (line.substr(0, 16) == "REMARK  TM-score") {
+							buffer << line << endl;
+							buffer << "MODEL        1" << endl;
+
+						} else if (line.substr(0, 6) == "ATOM  ") {
+							buffer << line << endl;
+						} else if (line.substr(0, 3) == "TER") {
+							buffer << line << endl;
+							buffer << "ENDMDL" << endl;
+							break;
+						}
+					}
+					if (verbose) {
+						cout << "Fine lettura file rototraslato" << endl;
+					}
+
+					buffer.clear();
+
+					//Load from memory buffer
+					PdbLoader pl(buffer);
+
+					if (!verbose)
+						pl.setNoVerbose();
+
+					pl.setModel(1);
+					pl.checkModel();
+
+					prot = new Protein();
+
+					pl.loadProtein(*prot);
+
+
+
+				}
+			}
+		} else
+			ERROR("No access to " + binary + "  binary!", exception);
+	} else
+		ERROR("No access to pdb files " + modelFile + " or " + nativeFile,
+				exception);
+	return prot;
+}
+
+//void TmScore::TMImpose(ProteinModels& prot, unsigned int model, unsigned int native, ProteinModels** imposedModel) {
+//
+//	stringstream sstm;
+//	sstm << "TMScore between models " << model << " and " << native;
+//	DEBUG_MSG(sstm.str());
+//
+//	//Save spacers in pdb files
+//	std::ofstream fout;
+//	PdbSaver ps(fout);
+//	fout.open((tmp + TMTMP_IN1).c_str());
+//	ps.saveSpacer(prot.getModel(model));
+//	ps.endFile();
+//	fout.close();
+//	fout.open((tmp + TMTMP_IN2).c_str());
+//	ps.saveSpacer(prot.getModel(native));
+//	ps.endFile();
+//	fout.close();
+//
+//	//Call TMScore binary
+//	return TMImpose((tmp + TMTMP_IN1), (tmp + TMTMP_IN2), imposedModel);
+//}
+//
+//Spacer* TmScore::spacerFromTMOutput(string pdbFile) {
+//	if (access(pdbFile.c_str(), R_OK) != 0)
+//		ERROR("Cannot read pdb file to fix", exception);
+//
+//	ifstream inFile(pdbFile.c_str());
+//	stringstream buffer;
+//	string line;
+//	while (inFile) {
+//		line = readLine(inFile);
+//		if (line.substr(0, 16) == "REMARK  TM-score") {
+//			buffer << line << endl;
+//			if (line.substr(6, 8) == "TM-score")
+//				buffer << "MODEL        1" << endl;
+//		} else if (line.substr(0, 6) == "ATOM  ") {
+//			buffer << line << endl;
+//		} else if (line.substr(0, 3) == "TER") {
+//			buffer << line << endl;
+//			buffer << "ENDMDL" << endl;
+//			break;
+//		}
+//	}
+//	buffer.clear();
+//	buffer.seekg(0);
+//	//Load from memory buffer
+//	PdbLoader pl(buffer);
+//	if (!verbose)
+//		pl.setNoVerbose();
+//	//Load and return protein object
+//	//*imposedModel = new ProteinModels();
+//	pl.setModel(1);
+//	pl.checkModel();
+//	Protein prot;
+//	pl.loadProtein(prot);
+//	unsigned int d=0;
+//	return prot.getSpacer(d);
+//}
+
+//char buffer[2048];
 //					bool flag=true;
 //					//la read implementa un sync al suo interno, questo mi permette di aspettare l'output del figlio senza pensieri
 //					while(flag){
@@ -125,72 +297,3 @@ void TmScore::TmImpose(string modelFile, string nativeFile) {
 ////						else if (this->verbose) cout << "valore dello score: " << score <<endl;
 //				}
 //					if (this->verbose) cout << "valore dello score: " << score <<endl;
-				}
-			}
-		} else
-			ERROR("No access to " + binary + "  binary!", exception);
-	} else
-		ERROR("No access to pdb files " + modelFile + " or " + nativeFile, exception);
-
-	//return spacerFromTMOutput(outputTmScore + TMTMP_OUT + "_atm", imposedModel);
-}
-
-//void TmScore::TMImpose(ProteinModels& prot, unsigned int model, unsigned int native, ProteinModels** imposedModel) {
-//
-//	stringstream sstm;
-//	sstm << "TMScore between models " << model << " and " << native;
-//	DEBUG_MSG(sstm.str());
-//
-//	//Save spacers in pdb files
-//	std::ofstream fout;
-//	PdbSaver ps(fout);
-//	fout.open((tmp + TMTMP_IN1).c_str());
-//	ps.saveSpacer(prot.getModel(model));
-//	ps.endFile();
-//	fout.close();
-//	fout.open((tmp + TMTMP_IN2).c_str());
-//	ps.saveSpacer(prot.getModel(native));
-//	ps.endFile();
-//	fout.close();
-//
-//	//Call TMScore binary
-//	return TMImpose((tmp + TMTMP_IN1), (tmp + TMTMP_IN2), imposedModel);
-//}
-//
-Spacer* TmScore::spacerFromTMOutput(string pdbFile) {
-	if (access(pdbFile.c_str(), R_OK) != 0)
-		ERROR("Cannot read pdb file to fix", exception);
-
-	ifstream inFile(pdbFile.c_str());
-	stringstream buffer;
-	string line;
-	while (inFile) {
-		line = readLine(inFile);
-		if (line.substr(0, 16) == "REMARK  TM-score") {
-			buffer << line << endl;
-			if (line.substr(6, 8) == "TM-score")
-				buffer << "MODEL        1" << endl;
-		} else if (line.substr(0, 6) == "ATOM  ") {
-			buffer << line << endl;
-		} else if (line.substr(0, 3) == "TER") {
-			buffer << line << endl;
-			buffer << "ENDMDL" << endl;
-			break;
-		}
-	}
-	buffer.clear();
-	buffer.seekg(0);
-	//Load from memory buffer
-	PdbLoader pl(buffer);
-	if (!verbose)
-		pl.setNoVerbose();
-	//Load and return protein object
-	//*imposedModel = new ProteinModels();
-	pl.setModel(1);
-	pl.checkModel();
-	Protein prot;
-	pl.loadProtein(prot);
-	unsigned int d=0;
-	return prot.getSpacer(d);
-}
-

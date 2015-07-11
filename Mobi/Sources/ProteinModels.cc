@@ -32,7 +32,6 @@ void ProteinModels::load(PdbLoader& pl) {
 		pl.setModel(i);
 		pl.checkModel();
 		this->Protein::load(pl);
-		models.push_back(*(this->getSpacer(i-1)));
 	}
 }
 
@@ -86,7 +85,6 @@ void ProteinModels::loadSameModels(PdbLoader& pl){
  		    	 pl.setModel(i);		  //dal pdb loader scelgo il modello da caricare nella proteina
  		    	 pl.checkModel();
  		    	 this->Protein::load(pl);          // creates the Protein object
- 		    	 models.push_back(*(this->getSpacer(i-1)));
  		     }
  		 cout << "\n" << "Modelli caricati nella proteina" << endl;
 
@@ -132,6 +130,8 @@ void ProteinModels::save(ProteinModels& prot, string outputFile){
 	string outputFile_1;
 	PdbSaver ps(fout);
 
+	if (verbose)
+				cout << "Salvataggio dei modelli su file" << endl;
 	// Open the proper output stream (file or stdout)
 	for (unsigned int i = 0; i < prot.size(); i++) {
 
@@ -157,6 +157,10 @@ void ProteinModels::save(ProteinModels& prot, string outputFile){
 
 }
 
+void ProteinModels::addModels(Spacer& sp){
+	this->models.push_back(sp);
+
+}
 
 
 vector<Spacer> ProteinModels::getModels() {
