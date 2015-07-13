@@ -187,6 +187,9 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 
 					prot = new Protein();
 
+					if (verbose)
+						cout << "### Caricamento proteina rototraslata ###" <<endl;
+
 					pl.loadProtein(*prot);
 
 

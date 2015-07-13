@@ -27,6 +27,7 @@
 // -----------------x-----------------------------------------------------------
 
 #include <ProteinModels.h>
+#include <ScaleDistance.h>
 #include <TmScore.h>
 #include <string>
 #include <GetArg.h>
@@ -142,19 +143,27 @@ int main(int argc, char* argv[]) {
 		for (unsigned int j = 0; j < prot.size(); j++)
 			if (i != j) {
 				if (v)
-				cout << outputFile + (itosDEF(i)) << outputFile + (itosDEF(j))<< endl;
-				traslata = tm.TmImpose(outputFile + (itosDEF(i)),outputFile + (itosDEF(j)));
-				if (traslata != NULL)
+					cout << "\n Lettura proteine da traslare:\n "
+							<< outputFile + (itosDEF(i))
+							<< outputFile + (itosDEF(j)) << endl;
+				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
+						outputFile + (itosDEF(j)));
+				if (traslata != NULL) {
+
 					prot.addModels(*(traslata->getSpacer(d)));
-				else
+				} else
 					ERROR("Errore nella creazione della proteina traslata",
 							exeption);
+				if (v)
+					cout << "\n ###Caricamento proteina modello### " << endl;
+
 				prot.addModels(*(prot.getSpacer(j)));
 
 			}
 
 	prot.printModels(outputFile);
 
+	ScaleDistance prova(prot, v);
 
 	return 0;
 }

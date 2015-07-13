@@ -105,6 +105,8 @@ void ProteinModels::printModels(string outputFile){
 
 	unsigned int i = 0;
 
+	if (verbose)
+		cout<<"\n ###Salvataggio su file dei modelli ###"<<endl;
 	vector<Spacer>::iterator walk = models.begin();
 	while (walk != models.end()) {
 
@@ -169,6 +171,6 @@ void ProteinModels::addModels(Spacer& sp){
 }
 
 
-vector<Spacer> ProteinModels::getModels() {
-	return this->models;
+Spacer ProteinModels::getModel(unsigned int u) {
+	return this->models[u];
 }

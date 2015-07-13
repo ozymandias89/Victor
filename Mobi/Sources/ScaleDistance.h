@@ -23,6 +23,7 @@
 
 #include<ProteinModels.h>
 #include<AtomCode.h>
+#include <string.h>
 
 using namespace Victor::Biopool;
 
@@ -41,8 +42,16 @@ public:
 
 	virtual ~ScaleDistance();
 
+
+
+	void getCaAtom (Spacer& s, bool flag);
+
+
 private:
 	bool verbose;
+	vector<Atom> CaVector1;
+	vector<Atom> CaVector2;
+	//vector<int>* ScaleD;
 
 };
 }

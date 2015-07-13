@@ -62,7 +62,7 @@ public:
 
 	void save(string outputFile);
 
-	vector <Spacer> getModels();
+	Spacer getModel(unsigned u);
 	void addModels(Spacer& sp);
 
 	void printModels(string outputFile);
@@ -70,6 +70,8 @@ public:
 	// MODIFIERS:
 private:
 	bool verbose;
+
+public:
 	vector <Spacer> models;
 
 };
