@@ -24,6 +24,7 @@
 #include<ProteinModels.h>
 #include<AtomCode.h>
 #include <string.h>
+#include <math.h>
 
 using namespace Victor::Biopool;
 
@@ -38,20 +39,21 @@ class ScaleDistance {
 public:
 
 	// CONSTRUCTORS/DESTRUCTOR:
-	ScaleDistance(const ProteinModels& _orig, bool _verbose = false);
+	ScaleDistance(const ProteinModels& _orig, bool _standardDeviation = false , bool _verbose = false);
 
 	virtual ~ScaleDistance();
 
 
-
-	void getCaAtom (Spacer& s, bool flag);
+private:
+	void getCaAtom (Spacer* s, bool flag);
 
 
 private:
-	bool verbose;
-	vector<Atom> CaVector1;
-	vector<Atom> CaVector2;
-	//vector<int>* ScaleD;
+	bool standardDev,verbose;
+	vector <Spacer> models;
+	vector <Atom> CaVector1, CaVector2;
+	vector < vector<double> > dist_from_Ca_atoms;
+	vector <double>* ScD;
 
 };
 }

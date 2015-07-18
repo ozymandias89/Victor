@@ -137,6 +137,7 @@ int main(int argc, char* argv[]) {
 
 	TmScore tm("./Mobi/data/TMscore", outputFile, v);
 
+
 	Protein* traslata = new Protein();
 
 	for (unsigned int i = 0; i < prot.size(); i++)
@@ -163,7 +164,13 @@ int main(int argc, char* argv[]) {
 
 	prot.printModels(outputFile);
 
-	ScaleDistance prova(prot, v);
+	//cout << "#########" << prot.models.size() << endl;
+
+	ScaleDistance prova(prot, false , v);
+
+
+	cout << "#########" << endl;
+
 
 	return 0;
 }

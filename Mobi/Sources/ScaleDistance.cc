@@ -10,53 +10,97 @@ using namespace Victor;
 using namespace Victor::Mobi;
 using namespace Victor::Biopool;
 
-ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool verbose) :
-	verbose(verbose) {
+ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool standardDeviation ,bool verbose) :
+		standardDev(standardDeviation), verbose(verbose), models(modelli.models) {
 
-	//vector <int>* ScaleD = new vector<int>(5);
+	Spacer* primo_modello = new Spacer;
+	Spacer* secondo_modello = new Spacer;
 
-	Spacer primo_modello;
-	Spacer secondo_modello;
+	unsigned int num_atomi = 0;
+	double ScalD, distance= -1.0;
 
+	if (models.size() != 0)
+		num_atomi = models[0].sizeAmino();
+	else
+		ERROR("Nessun modello presente nella proteina", exception);
+
+	vector <double>* ScD = new vector <double>(num_atomi);
+
+
+	vector<vector<double> > dist_from_Ca_atoms(num_atomi,
+			vector<double>(0.0));
+
+	cout << "################# " << dist_from_Ca_atoms.size() << "   " << dist_from_Ca_atoms[0].size() << endl;
+
+
+	if (verbose){
+		cout << "Numero di modelli presenti: " << models.size() << endl;
+		cout << "Ogni modello ha un numero di atomi pari a: " << num_atomi << endl;
+	}
+	//scorro i modelli e per ognuno creo il vettore di atomi
 	unsigned int u = 0;
-	while (u <((modelli.size())/2)) {
+
+	while (u < (models.size())) {
+		//if (verbose)
+		//cout << "#modello numero: " << u << endl;
 		if (verbose)
-		cout << "#modello numero: " << u << endl;
-		primo_modello = modelli.models[u];
-		this-> getCaAtom(primo_modello, true);
+				cout << "#Distanza tra modello: " << u;
+
+		primo_modello = &models[u];
+		getCaAtom(primo_modello, true);
 		u++;
-		cout << "#modello numero: " << u << endl;
-		secondo_modello = modelli.models[u];
-		this-> getCaAtom(secondo_modello, false);
+		//if (verbose)
+		//cout << "#modello numero: " << u << endl;
+
+		if (verbose)
+						cout << " e modello: " << u << endl;
+
+		secondo_modello = &models[u];
+		getCaAtom(secondo_modello, false);
 		u++;
+
+
+		//cout << "GRandezza vettore " << dist_from_Ca_atoms[0].size() << endl;
+
+		for (unsigned int i = 0; i < num_atomi; i++) {
+			distance = CaVector1[i].distance(CaVector2[i]);
+			ScalD = 1.0 / (pow (( 1.0 + (distance/4.0) ), 2.0));
+			dist_from_Ca_atoms[i].push_back(ScalD);
+			if (verbose)
+			cout << dist_from_Ca_atoms[i].back() << endl;
+		}
+
+		//cout << "GRAndezza vettore " << dist_from_Ca_atoms[0].size() << endl;
+
+		CaVector1.clear();
+		CaVector2.clear();
+
 	}
 
-	//cout << "##### Atomo:" << this->CaVector1[0].getCode() << endl;
+
+	if (standardDeviation){}
+	else{
+		int count;
+		double sum;
+		for (unsigned int i = 0; i < num_atomi; i++) {
+			count=0;
+			sum=0;
+			cout << "Grandezza vettore " << dist_from_Ca_atoms[0].size() << endl;
+			vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
+			while (atom != dist_from_Ca_atoms[i].end()){
+
+				sum = sum + (*atom);
+
+				atom++;
+				count++;
+			}
+			cout << "SOMMA " << sum << " COUNT " << count << endl;
+			ScD->push_back((sum / count));
+			cout << "media per il " << i << " atomo = " << sum/count << endl;
 
 
+		}
 
-
-}
-
-
-
-void ScaleDistance :: getCaAtom (Spacer& s, bool flag){
-
-	for (unsigned int u=0; u < s.sizeAmino(); u++) {
-		AminoAcid a = s.getAmino(u);
-		if (verbose)
-			cout << "#Aminoacido numero: " << u << ":" << endl;
-
-		unsigned int i = 1;
-
-		if (flag)
-			this->CaVector1.push_back(a.getAtom(i));
-		else
-			this->CaVector2.push_back(a.getAtom(i));
-
-
-		if (a.getAtom(i).getCode()!= CA)
-			ERROR("L'atomo trovato non è un carbonio alfa.", exception);
 
 	}
 
@@ -65,3 +109,26 @@ void ScaleDistance :: getCaAtom (Spacer& s, bool flag){
 ScaleDistance::~ScaleDistance() {
 }
 
+
+void ScaleDistance::getCaAtom(Spacer* s, bool flag) {
+
+//per un modello fissato creo il vettore di atomi
+	AminoAcid* a = new AminoAcid;
+
+	for (unsigned int u = 0; u < s->sizeAmino(); u++) {
+		a = &(s->getAmino(u));
+
+
+		unsigned int i = 1;
+
+		if (flag)
+			this->CaVector1.push_back(a->getAtom(i));
+		else
+			this->CaVector2.push_back(a->getAtom(i));
+
+		if (a->getAtom(i).getCode() != CA)
+			ERROR("L'atomo trovato non è un carbonio alfa.", exception);
+
+	}
+
+}
