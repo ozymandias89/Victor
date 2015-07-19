@@ -94,8 +94,8 @@ ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool standardDeviatio
 				count++;
 			}
 			//cout << "SOMMA " << sum << " COUNT " << count << endl;
-			ScD->push_back((sum / count));
-			cout << "media per il " << i << " atomo = " << ScD->back() << endl;
+			ScD.push_back((sum / count));
+			cout << "media per il " << i << " atomo = " << ScD.back() << endl;
 
 
 		}
@@ -107,7 +107,7 @@ ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool standardDeviatio
 
 			cout << "#############################" << endl;
 
-			vector<double>::iterator everage = ScD->begin();
+			vector<double>::iterator everage = ScD.begin();
 
 			for (unsigned int i = 0; i < num_atomi; i++) {
 				sum=0;
@@ -125,7 +125,7 @@ ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool standardDeviatio
 
 				standDev = sqrt(sum / count);
 
-				cout << "sum : " << sum << "COUNT" << count << endl;
+				cout << "sum : " << sum << " COUNT " << count << endl;
 				cout << "media : " << *everage << endl;
 				cout << "DEVSTADARD per il " << i << " atomo = " << standDev << endl;
 				*everage = standDev;
@@ -174,6 +174,6 @@ void ScaleDistance::getCaAtom(Spacer* s, bool flag) {
 
 
 
-vector <double>* ScaleDistance::get_ScalDist(){
+vector <double> ScaleDistance::get_ScalDist(){
 	return ScD;
 }

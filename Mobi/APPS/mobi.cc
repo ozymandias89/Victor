@@ -25,7 +25,6 @@
 //
 //
 // -----------------x-----------------------------------------------------------
-
 #include <ProteinModels.h>
 #include <ScaleDistance.h>
 #include <TmScore.h>
@@ -137,7 +136,6 @@ int main(int argc, char* argv[]) {
 
 	TmScore tm("./Mobi/data/TMscore", outputFile, v);
 
-
 	Protein* traslata = new Protein();
 
 	for (unsigned int i = 0; i < prot.size(); i++)
@@ -164,19 +162,17 @@ int main(int argc, char* argv[]) {
 
 	prot.printModels(outputFile);
 
-	//cout << "#########" << prot.models.size() << endl;
+	ScaleDistance prova(prot, false , v);
 
-	ScaleDistance prova(prot, true , v);
-
-
-	vector <double>* SD = new vector <double>;
+	vector<double> SD;
 
 	SD = prova.get_ScalDist();
 
+	for (vector<double>::iterator everage = SD.begin(); everage != SD.end();
+			everage++) {
+		cout << *everage << endl;
 
-
-	cout << "#########" << SD->size() << endl;
-
+	}
 
 	return 0;
 }
