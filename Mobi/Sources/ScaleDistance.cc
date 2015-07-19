@@ -24,7 +24,7 @@ ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool standardDeviatio
 	else
 		ERROR("Nessun modello presente nella proteina", exception);
 
-	vector <double>* ScD = new vector <double>(num_atomi);
+
 
 
 	vector<vector<double> > dist_from_Ca_atoms(num_atomi,
@@ -78,8 +78,7 @@ ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool standardDeviatio
 	}
 
 
-	if (standardDeviation){}
-	else{
+
 		int count;
 		double sum;
 		for (unsigned int i = 0; i < num_atomi; i++) {
@@ -94,15 +93,55 @@ ScaleDistance::ScaleDistance(const ProteinModels& modelli, bool standardDeviatio
 				atom++;
 				count++;
 			}
-			cout << "SOMMA " << sum << " COUNT " << count << endl;
+			//cout << "SOMMA " << sum << " COUNT " << count << endl;
 			ScD->push_back((sum / count));
-			cout << "media per il " << i << " atomo = " << sum/count << endl;
+			cout << "media per il " << i << " atomo = " << ScD->back() << endl;
+
+
+		}
+
+		if (standardDev){
+
+
+			double standDev=-1;
+
+			cout << "#############################" << endl;
+
+			vector<double>::iterator everage = ScD->begin();
+
+			for (unsigned int i = 0; i < num_atomi; i++) {
+				sum=0;
+				count=0;
+				vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
+
+
+				while (atom != dist_from_Ca_atoms[i].end()){
+					cout << "Stampo distanza fra atomi " << *atom << endl;
+					sum += (pow ( ((*atom) - (*everage) ) , 2.0 ));
+							atom++;
+							count++;
+
+				}
+
+				standDev = sqrt(sum / count);
+
+				cout << "sum : " << sum << "COUNT" << count << endl;
+				cout << "media : " << *everage << endl;
+				cout << "DEVSTADARD per il " << i << " atomo = " << standDev << endl;
+				*everage = standDev;
+
+				everage++;
+
+
+			}
 
 
 		}
 
 
-	}
+
+
+
 
 }
 
@@ -131,4 +170,10 @@ void ScaleDistance::getCaAtom(Spacer* s, bool flag) {
 
 	}
 
+}
+
+
+
+vector <double>* ScaleDistance::get_ScalDist(){
+	return ScD;
 }

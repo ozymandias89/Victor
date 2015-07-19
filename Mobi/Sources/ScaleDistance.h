@@ -44,6 +44,8 @@ public:
 	virtual ~ScaleDistance();
 
 
+	vector <double>* get_ScalDist();
+
 private:
 	void getCaAtom (Spacer* s, bool flag);
 
@@ -53,7 +55,7 @@ private:
 	vector <Spacer> models;
 	vector <Atom> CaVector1, CaVector2;
 	vector < vector<double> > dist_from_Ca_atoms;
-	vector <double>* ScD;
+	vector <double>* ScD = new vector <double>;
 
 };
 }

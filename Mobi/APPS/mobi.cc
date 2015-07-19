@@ -166,10 +166,16 @@ int main(int argc, char* argv[]) {
 
 	//cout << "#########" << prot.models.size() << endl;
 
-	ScaleDistance prova(prot, false , v);
+	ScaleDistance prova(prot, true , v);
 
 
-	cout << "#########" << endl;
+	vector <double>* SD = new vector <double>;
+
+	SD = prova.get_ScalDist();
+
+
+
+	cout << "#########" << SD->size() << endl;
 
 
 	return 0;
