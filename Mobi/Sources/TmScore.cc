@@ -194,7 +194,6 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 
 
 
-
 				}
 			}
 		} else

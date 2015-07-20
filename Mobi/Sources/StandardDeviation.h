@@ -18,8 +18,8 @@
  * @version 0.1
  */
 
-#ifndef MOBI_SOURCES_SCALEDISTANCE_H_
-#define MOBI_SOURCES_SCALEDISTANCE_H_
+#ifndef MOBI_SOURCES_STANDARDDEVIATION_H_
+#define MOBI_SOURCES_STANDARDDEVIATION_H_
 
 #include<ProteinModels.h>
 #include<AtomCode.h>
@@ -34,14 +34,14 @@ namespace Mobi {
  * @brief Extends Protein class with functionalities related to manipulation of NMR model and models comparations.
  * Scale Distance metric is provided.
  */
-class ScaleDistance {
+class StandardDeviation {
 
 public:
 
 	// CONSTRUCTORS/DESTRUCTOR:
-	ScaleDistance(const ProteinModels& _orig, bool _standardDeviation = false , bool _verbose = false);
+	StandardDeviation(const ProteinModels& _orig , bool _verbose = false);
 
-	virtual ~ScaleDistance();
+	virtual ~StandardDeviation();
 
 
 	vector <double> get_ScalDist();
@@ -51,7 +51,7 @@ private:
 
 
 private:
-	bool standardDev,verbose;
+	bool verbose;
 	vector <Spacer> models;
 	vector <Atom> CaVector1, CaVector2;
 	vector < vector<double> > dist_from_Ca_atoms;
@@ -61,4 +61,4 @@ private:
 }
 }
 
-#endif /* MOBI_SOURCES_SCALEDISTANCE_H_ */
+#endif /* MOBI_SOURCES_STANDARDDEVIATION_H_ */

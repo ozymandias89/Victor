@@ -26,11 +26,11 @@
 //
 // -----------------x-----------------------------------------------------------
 #include <ProteinModels.h>
-#include <ScaleDistance.h>
 #include <TmScore.h>
 #include <string>
 #include <GetArg.h>
 #include <PdbSaver.h>
+#include <StandardDeviation.h>
 
 using namespace Victor;
 using namespace Victor::Biopool;
@@ -138,9 +138,9 @@ int main(int argc, char* argv[]) {
 
 	Protein* traslata = new Protein();
 
-	for (unsigned int i = 0; i < prot.size(); i++)
-		for (unsigned int j = 0; j < prot.size(); j++)
-			if (i != j) {
+	for (unsigned int i = 0; i < prot.size()-1; i++)
+		for (unsigned int j = i+1; j < prot.size(); j++)
+			{
 				if (v)
 					cout << "\n Lettura proteine da traslare:\n "
 							<< outputFile + (itosDEF(i))
@@ -158,15 +158,17 @@ int main(int argc, char* argv[]) {
 
 				prot.addModels(*(prot.getSpacer(j)));
 
+
 			}
 
-	prot.printModels(outputFile);
 
-	ScaleDistance prova(prot, false , v);
+	//prot.printModels(outputFile);
+
+	StandardDeviation std(prot, v);
 
 	vector<double> SD;
 
-	SD = prova.get_ScalDist();
+	SD = std.get_ScalDist();
 
 	for (vector<double>::iterator everage = SD.begin(); everage != SD.end();
 			everage++) {

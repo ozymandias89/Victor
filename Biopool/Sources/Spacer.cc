@@ -1665,25 +1665,26 @@ void Spacer::setDSSP(bool verbose) {
                 if (it != ss[i].end()) { // found a n-turn
                     char pos_s = *it;
 					int pos = atoi(&(pos_s));
-					if (!ss[i + pos - 1].empty()) {
-						set<char>::iterator it1 = ss[i + pos - 1].find(
-								turns[l]);
-						if (it1 != ss[i + pos - 1].end()) { // found the same n-turn after n-1 positions
-							bool helixBreak = false;
-							for (unsigned int m = i; m < (i + pos); m++) {
-								set<char>::iterator it2 = ss[m].find(turns[l]);
-								if (it2 == ss[m].end()) {
-									helixBreak = true;
-								}
+					if(i+pos-1 >= ss.size())
+						break;
+					set<char>::iterator it1 = ss[i + pos - 1].find(
+							turns[l]);
+					if (it1 != ss[i + pos - 1].end()) { // found the same n-turn after n-1 positions
+						bool helixBreak = false;
+						for (unsigned int m = i; m < (i + pos); m++) {
+							set<char>::iterator it2 = ss[m].find(turns[l]);
+							if (it2 == ss[m].end()) {
+								helixBreak = true;
 							}
-							if (!helixBreak) {
-								for (unsigned int m = i; m < (i + pos); m++) {
-									ss[m].insert(helices[l]);
-								}
-							}
-							break;
 						}
+						if (!helixBreak) {
+							for (unsigned int m = i; m < (i + pos); m++) {
+								ss[m].insert(helices[l]);
+							}
+						}
+						break;
 					}
+
 				}
 			}
             // Set sheets (E)
