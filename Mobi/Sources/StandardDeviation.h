@@ -44,7 +44,9 @@ public:
 	virtual ~StandardDeviation();
 
 
-	vector <double> get_ScalDist();
+	vector <double> get_everage_distance();
+	vector <double> get_standard_deviation();
+
 
 private:
 	void getCaAtom (Spacer* s, bool flag);
@@ -55,6 +57,7 @@ private:
 	vector <Spacer> models;
 	vector <Atom> CaVector1, CaVector2;
 	vector < vector<double> > dist_from_Ca_atoms;
+	vector <double> dist_everage;
 	vector <double> ScD;
 
 };

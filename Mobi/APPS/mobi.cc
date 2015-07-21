@@ -167,9 +167,20 @@ int main(int argc, char* argv[]) {
 	StandardDeviation std(prot, v);
 
 	vector<double> SD;
+	vector<double> EVERAGE;
 
-	SD = std.get_ScalDist();
+	EVERAGE = std.get_everage_distance();
 
+	cout << "EVERAGE" << endl;
+		for (vector<double>::iterator everage = EVERAGE.begin(); everage != EVERAGE.end();
+				everage++) {
+			cout << *everage << endl;
+
+		}
+
+	SD = std.get_standard_deviation();
+
+	cout << "STANDARD DEVIATION" << endl;
 	for (vector<double>::iterator everage = SD.begin(); everage != SD.end();
 			everage++) {
 		cout << *everage << endl;
