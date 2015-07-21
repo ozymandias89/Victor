@@ -61,6 +61,7 @@ public:
 	}
 
 	void save(string outputFile);
+	void remove(string outputFile);
 
 	Spacer getModel(unsigned u);
 	void addModels(Spacer& sp);

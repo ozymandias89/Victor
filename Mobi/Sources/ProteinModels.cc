@@ -150,7 +150,7 @@ void ProteinModels::save(string outputFile){
 	PdbSaver ps(fout);
 
 	if (verbose)
-				cout << "Salvataggio dei modelli su file" << endl;
+				cout << "Salvataggio dei modelli su file..." << endl;
 	// Open the proper output stream (file or stdout)
 	for (unsigned int i = 0; i < this->size(); i++) {
 
@@ -171,8 +171,31 @@ void ProteinModels::save(string outputFile){
 		fout.close();
 
 		if (verbose)
-			cout << "file chiuso" << endl;
+			cout << "file chiuso." << endl;
 	}
+	if (verbose)
+				cout << " " << endl;
+
+}
+
+
+
+void ProteinModels::remove(string outputFile) {
+
+	string outputFile_1;
+
+	if (verbose)
+		cout << "Cancellazione file..." << endl;
+	// Open the proper output stream (file or stdout)
+	for (unsigned int i = 0; i < this->size(); i++) {
+
+		outputFile_1 = outputFile + (itosDEF(i)) + PDB;
+		if(std::remove(outputFile_1.c_str())!=0)
+			ERROR("File don't deleted! ",exception);
+
+	}
+	if (verbose)
+		cout << " " << endl;
 
 }
 

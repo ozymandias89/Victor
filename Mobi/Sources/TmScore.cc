@@ -58,8 +58,6 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 		//se l'eseguibile ha i permessi di esecuzione
 		if (access(binary.c_str(), X_OK) == 0) {
 			pid_t pid;
-			if (this->verbose)
-				cout << "Accesso consentito." << endl;
 			//Pipeing TMS output
 			int pipefd[2];
 			pipe(pipefd);
@@ -75,8 +73,6 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 					if (dup2(pipefd[1], 2) < 0)
 						ERROR("Unable to redirect error output TMScore", error);//stderr
 					close(pipefd[1]);						//close output pipe
-					if (this->verbose)
-						cout << "Eseguo TMScore" << endl;
 					if (execl(binary.c_str(), binary.c_str(), modelFile.c_str(),
 							nativeFile.c_str(), "-o", outputTmScore.c_str(),
 							NULL))
@@ -98,11 +94,6 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 					stringstream buffer;
 					string line;
 
-					if (verbose) {
-						cout
-								<< "Conversione file rototraslato per renderlo leggibile"
-								<< endl;
-					}
 					while (inFile) {
 						line = readLine(inFile);
 						if (line.substr(0, 16) == "REMARK  TM-score") {
@@ -117,25 +108,22 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 							break;
 						}
 					}
-					if (verbose) {
-						cout << "Fine lettura file rototraslato" << endl;
-					}
+
 
 					buffer.clear();
 
 					//Load from memory buffer
 					PdbLoader pl(buffer);
 
-					if (!verbose)
-						pl.setNoVerbose();
+
+					pl.setNoVerbose();
 
 					pl.setModel(1);
 					pl.checkModel();
 
 					prot = new Protein();
 
-					if (verbose)
-						cout << "### Caricamento proteina rototraslata ###" <<endl;
+
 
 					pl.loadProtein(*prot);
 
