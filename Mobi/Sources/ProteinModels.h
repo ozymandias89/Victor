@@ -72,6 +72,7 @@ private:
 	bool verbose;
 
 public:
+	vector <Spacer> original_models;
 	vector <Spacer> models;
 
 };

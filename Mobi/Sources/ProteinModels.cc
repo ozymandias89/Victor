@@ -34,6 +34,11 @@ void ProteinModels::load(PdbLoader& pl) {
 		pl.checkModel();
 		this->Protein::load(pl);
 	}
+
+	for (unsigned int i = 0; i < this->size(); i++)
+		original_models.push_back(*(this->getSpacer(i)));
+
+
 	if (verbose)
 	 		 cout << "\n" << "Modelli caricati nella proteina" << endl;
 
@@ -90,6 +95,12 @@ void ProteinModels::loadSameModels(PdbLoader& pl){
  		    	 pl.checkModel();
  		    	 this->Protein::load(pl);          // creates the Protein object
  		     }
+
+ 		for (unsigned int i = 0; i < this->size(); i++)
+ 				original_models.push_back(*(this->getSpacer(i)));
+
+
+
  		 if (verbose)
  		 cout << "\n" << "Modelli caricati nella proteina" << endl;
 

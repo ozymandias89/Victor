@@ -95,6 +95,8 @@ int main(int argc, char* argv[]) {
 	PdbLoader pl(inFile);    // creates the PdbLoader object
 
 	ProteinModels prot;
+
+
 	// Protein prot;
 
 	if (v) {
@@ -132,60 +134,91 @@ int main(int argc, char* argv[]) {
 
 	/////////////////////////////////////////////////////////////////////
 
-	unsigned int d = 0;
+//	unsigned int d = 0;
+//
+//	TmScore tm("./Mobi/data/TMscore", outputFile, v);
+//
+//	Protein* traslata = new Protein();
+//
+//	for (unsigned int i = 0; i < prot.size()-1; i++)
+//		for (unsigned int j = i+1; j < prot.size(); j++)
+//			{
+//				if (v)
+//					cout << "\n Lettura proteine da traslare:\n "
+//							<< outputFile + (itosDEF(i))
+//							<< outputFile + (itosDEF(j)) << endl;
+//				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
+//						outputFile + (itosDEF(j)));
+//				if (traslata != NULL) {
+//
+//					prot.addModels(*(traslata->getSpacer(d)));
+//				} else
+//					ERROR("Errore nella creazione della proteina traslata",
+//							exeption);
+//				if (v)
+//					cout << "\n ###Caricamento proteina modello### " << endl;
+//
+//				prot.addModels(*(prot.getSpacer(j)));
+//
+//
+//			}
+//
+//  prot.printModels(outputFile);
+//
+//	StandardDeviation std(prot, v);
+//	vector<double> SD;
+//
+//	vector<double> EVERAGE;
+//
+//	EVERAGE = std.get_everage_distance();
+//
+//	cout << "EVERAGE" << endl;
+//		for (vector<double>::iterator everage = EVERAGE.begin(); everage != EVERAGE.end();
+//				everage++) {
+//			cout << *everage << endl;
+//
+//		}
+//
+//
+//	SD = std.get_standard_deviation();
+//	cout << "STANDARD DEVIATION" << endl;
+//	for (vector<double>::iterator walk = SD.begin(); walk != SD.end();
+//			walk++) {
+//		cout << *walk << endl;
+//	}
 
-	TmScore tm("./Mobi/data/TMscore", outputFile, v);
 
-	Protein* traslata = new Protein();
-
-	for (unsigned int i = 0; i < prot.size()-1; i++)
-		for (unsigned int j = i+1; j < prot.size(); j++)
-			{
-				if (v)
-					cout << "\n Lettura proteine da traslare:\n "
-							<< outputFile + (itosDEF(i))
-							<< outputFile + (itosDEF(j)) << endl;
-				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
-						outputFile + (itosDEF(j)));
-				if (traslata != NULL) {
-
-					prot.addModels(*(traslata->getSpacer(d)));
-				} else
-					ERROR("Errore nella creazione della proteina traslata",
-							exeption);
-				if (v)
-					cout << "\n ###Caricamento proteina modello### " << endl;
-
-				prot.addModels(*(prot.getSpacer(j)));
+///////////////////////////////////////////////////
 
 
-			}
 
-
-	//prot.printModels(outputFile);
 
 	StandardDeviation std(prot, v);
 
-	vector<double> SD;
-	vector<double> EVERAGE;
+	vector<double> ANGLE_PHI;
+	ANGLE_PHI=std.get_StandarDev_angle_PHI();
 
-	EVERAGE = std.get_everage_distance();
 
-	cout << "EVERAGE" << endl;
-		for (vector<double>::iterator everage = EVERAGE.begin(); everage != EVERAGE.end();
-				everage++) {
-			cout << *everage << endl;
+	cout << "STANDARD DEVIATION" << endl;
+	for (vector<double>::iterator walk = ANGLE_PHI.begin(); walk != ANGLE_PHI.end();
+			walk++) {
+		cout << *walk << endl;
+
+	}
+
+
+	vector<double> ANGLE_PSI;
+		ANGLE_PSI=std.get_StandarDev_angle_PSI();
+
+
+		cout << "STANDARD DEVIATION" << endl;
+		for (vector<double>::iterator walk = ANGLE_PSI.begin(); walk != ANGLE_PSI.end();
+				walk++) {
+			cout << *walk << endl;
 
 		}
 
-	SD = std.get_standard_deviation();
 
-	cout << "STANDARD DEVIATION" << endl;
-	for (vector<double>::iterator everage = SD.begin(); everage != SD.end();
-			everage++) {
-		cout << *everage << endl;
-
-	}
 
 	return 0;
 }

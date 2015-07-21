@@ -46,6 +46,8 @@ public:
 
 	vector <double> get_everage_distance();
 	vector <double> get_standard_deviation();
+	vector <double> get_StandarDev_angle_PHI();
+	vector <double> get_StandarDev_angle_PSI();
 
 
 private:
@@ -54,11 +56,15 @@ private:
 
 private:
 	bool verbose;
+	vector <Spacer> original_models;
 	vector <Spacer> models;
 	vector <Atom> CaVector1, CaVector2;
 	vector < vector<double> > dist_from_Ca_atoms;
 	vector <double> dist_everage;
 	vector <double> ScD;
+	vector <double> angle_PHI;
+	vector <double> angle_PSI;
+
 
 };
 }
