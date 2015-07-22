@@ -26,6 +26,7 @@
 //
 // -----------------x-----------------------------------------------------------
 #include <ProteinModels.h>
+#include <SecondaryStructure.h>
 #include <TmScore.h>
 #include <string>
 #include <GetArg.h>
@@ -134,52 +135,52 @@ int main(int argc, char* argv[]) {
 
 	/////////////////////////////////////////////////////////////////////
 
-	unsigned int d = 0;
-
-	TmScore tm("./Mobi/data/TMscore", outputFile, v);
-
-	Protein* traslata = new Protein();
-
-	for (unsigned int i = 0; i < prot.size()-1; i++)
-		for (unsigned int j = i+1; j < prot.size(); j++)
-			{
-				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
-						outputFile + (itosDEF(j)));
-				if (traslata != NULL) {
-
-					prot.addModels(*(traslata->getSpacer(d)));
-				} else
-					ERROR("Errore nella creazione della proteina traslata",
-							exeption);
-
-				prot.addModels(*(prot.getSpacer(j)));
-
-
-			}
-
-  //prot.printModels(outputFile);
-
-	StandardDeviation std(prot, v);
-	vector<double> SD;
-
-	vector<double> EVERAGE;
-
-	EVERAGE = std.get_everage_distance();
-
-	cout << "EVERAGE" << endl;
-		for (vector<double>::iterator everage = EVERAGE.begin(); everage != EVERAGE.end();
-				everage++) {
-			cout << *everage << endl;
-
-		}
-
-
-	SD = std.get_standard_deviation();
-	cout << "STANDARD DEVIATION" << endl;
-	for (vector<double>::iterator walk = SD.begin(); walk != SD.end();
-			walk++) {
-		cout << *walk << endl;
-	}
+//	unsigned int d = 0;
+//
+//	TmScore tm("./Mobi/data/TMscore", outputFile, v);
+//
+//	Protein* traslata = new Protein();
+//
+//	for (unsigned int i = 0; i < prot.size()-1; i++)
+//		for (unsigned int j = i+1; j < prot.size(); j++)
+//			{
+//				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
+//						outputFile + (itosDEF(j)));
+//				if (traslata != NULL) {
+//
+//					prot.addModels(*(traslata->getSpacer(d)));
+//				} else
+//					ERROR("Errore nella creazione della proteina traslata",
+//							exeption);
+//
+//				prot.addModels(*(prot.getSpacer(j)));
+//
+//
+//			}
+//
+//  //prot.printModels(outputFile);
+//
+//	StandardDeviation std(prot, v);
+//	vector<double> SD;
+//
+//	vector<double> EVERAGE;
+//
+//	EVERAGE = std.get_everage_distance();
+//
+//	cout << "EVERAGE" << endl;
+//		for (vector<double>::iterator everage = EVERAGE.begin(); everage != EVERAGE.end();
+//				everage++) {
+//			cout << *everage << endl;
+//
+//		}
+//
+//
+//	SD = std.get_standard_deviation();
+//	cout << "STANDARD DEVIATION" << endl;
+//	for (vector<double>::iterator walk = SD.begin(); walk != SD.end();
+//			walk++) {
+//		cout << *walk << endl;
+//	}
 
 
 ///////////////////////////////////////////////////
@@ -211,6 +212,22 @@ int main(int argc, char* argv[]) {
 //			cout << *walk << endl;
 //
 //		}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
+	SecondaryStructure sstr (prot, v);
+
+	vector<char> MOB;
+	MOB = sstr.getMobilitySecondaryStructure();
+
+	cout << "\nSECONDARY STRUCTURE" << endl;
+	for (vector<char>::iterator walk = MOB.begin(); walk != MOB.end(); walk++) {
+		cout << *walk << " ";
+
+	}
+
+	cout << endl;
 
 	prot.remove(outputFile);
 
