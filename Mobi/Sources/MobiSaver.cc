@@ -57,17 +57,177 @@ MobiSaver::~MobiSaver() {
 
 
 
-void MobiSaver::save_mob_everageScalD (){
+void MobiSaver::save_mob_everageScalD(vector <double> everageDistance){
 
-	ofstream fout;			//stream in output
+	if (everageDistance.size()==0)
+		ERROR ("Vector everage distance empty!", exception);
 
+	ofstream fout (out.c_str(), ofstream::app);
+
+	if (!fout)
+		ERROR("Could not open file for writing.", error);
 
 	if (verbose)
-		cout<<"\n ###Salvataggio sul file della mobilità data la distanza media ###"<<endl;
+		cout<<"\n ### Salvataggio sul file della mobilità data la distanza media ###"<<endl;
+
+	fout << endl;
+	fout << "> Average scale distance 0" << endl;
+
+	for (vector<double>::iterator walk = everageDistance.begin();
+			walk != everageDistance.end(); walk++) {
+		if (*(walk) < 0.85)
+			fout << "M";
+		else
+			fout << ".";
+	}
+
+	fout.close();
+
+	if (verbose)
+		cout << "Mobility from average scaled distance saved!" << endl;
 
 
 
+}
 
 
+void MobiSaver::save_mob_standardDeviation(vector<double> Scale_distance) {
+
+	if (Scale_distance.size() == 0)
+		ERROR("Vector standard deviation empty!", exception);
+
+	ofstream fout(out.c_str(), ofstream::app);
+
+	if (!fout)
+		ERROR("Could not open file for writing.", error);
+
+	if (verbose)
+		cout
+				<< "\n ### Salvataggio sul file della mobilità data dalla standard deviation ###"
+				<< endl;
+
+	fout << endl;
+	fout << "> Standard deviation distance 1" << endl;
+
+	for (vector<double>::iterator walk = Scale_distance.begin();
+			walk != Scale_distance.end(); walk++) {
+		if (*(walk) > 0.09)
+			fout << "M";
+		else
+			fout << ".";
+	}
+
+	fout.close();
+
+	if (verbose)
+		cout << "Mobility from standard deviation saved!" << endl;
+
+}
+
+
+void MobiSaver::save_mob_angle_PHI(vector<double> angle_PHI){
+
+	if (angle_PHI.size() == 0)
+			ERROR("Vector angle PHI empty!", exception);
+
+		ofstream fout(out.c_str(), ofstream::app);
+
+		if (!fout)
+			ERROR("Could not open file for writing.", error);
+
+		if (verbose)
+			cout
+					<< "\n ### Salvataggio sul file della mobilità data dall'angle_PHI ###"
+					<< endl;
+
+		fout << endl;
+		fout << "> Phi angle 2" << endl;
+
+		for (vector<double>::iterator walk = angle_PHI.begin();
+				walk != angle_PHI.end(); walk++) {
+			if (*(walk) > 20)
+				fout << "M";
+			else
+				fout << ".";
+		}
+
+		fout.close();
+
+		if (verbose)
+			cout << "Mobility from angle_PHI saved!" << endl;
+
+}
+
+void MobiSaver::save_mob_angle_PSI(vector<double> angle_PSI){
+
+	if (angle_PSI.size() == 0)
+			ERROR("Vector angle PSI empty!", exception);
+
+		ofstream fout(out.c_str(), ofstream::app);
+
+		if (!fout)
+			ERROR("Could not open file for writing.", error);
+
+		if (verbose)
+			cout
+					<< "\n ### Salvataggio sul file della mobilità data dall'angle_PSI ###"
+					<< endl;
+
+		fout << endl;
+		fout << "> Psi angle 3" << endl;
+
+		for (vector<double>::iterator walk = angle_PSI.begin();
+				walk != angle_PSI.end(); walk++) {
+			if (*(walk) > 20)
+				fout << "M";
+			else
+				fout << ".";
+		}
+
+		fout.close();
+
+		if (verbose)
+			cout << "Mobility from angle_PSI saved!" << endl;
+
+}
+
+void MobiSaver::save_mob_SecondaryStructure(vector<char> Mob_SecStructure){
+
+	if (Mob_SecStructure.size() == 0)
+			ERROR("Vector Mob_SecStructure empty!", exception);
+
+		ofstream fout(out.c_str(), ofstream::app);
+
+		if (!fout)
+			ERROR("Could not open file for writing.", error);
+
+		if (verbose)
+			cout
+					<< "\n ### Salvataggio sul file della mobilità data la struttura secondaria ###"
+					<< endl;
+
+		fout << endl;
+		fout << "> Secondary structure 4" << endl;
+
+		for (vector<char>::iterator walk = Mob_SecStructure.begin();
+				walk != Mob_SecStructure.end(); walk++)
+				fout << *(walk);
+
+		fout.close();
+
+		if (verbose)
+			cout << "Mobility from sacondary structure saved!" << endl;
+
+}
+
+void MobiSaver::save_allMobility(vector<double> everageDistance,
+		vector<double> Scale_distance, vector<double> angle_PHI,
+		vector<double> angle_PSI, vector<char> Mob_SecStructure) {
+
+	save_mob_everageScalD(everageDistance);
+	save_mob_standardDeviation(Scale_distance);
+	save_mob_angle_PHI(angle_PHI);
+	save_mob_angle_PSI(angle_PSI);
+	save_mob_SecondaryStructure(Mob_SecStructure);
 
 }

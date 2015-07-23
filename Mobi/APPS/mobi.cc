@@ -120,6 +120,9 @@ int main(int argc, char* argv[]) {
 	} while ((strcmp(input.c_str(), "y")) != 0
 			&& (strcmp(input.c_str(), "n")) != 0); //(!cin.fail() && input != 'y' && input != 'n');
 
+	if (!v)
+			cout << "\nLOAD..." << endl;
+
 	if ((strcmp(input.c_str(), "y")) == 0) {
 		prot.load(pl);
 	} else {
@@ -134,49 +137,53 @@ int main(int argc, char* argv[]) {
 	// Mi salvo i vari modelli
 	prot.save(outputFile);
 
+
+
+
+
 	/////////////////////////////////////////////////////////////////////
 
-//	unsigned int d = 0;
-//
-//	TmScore tm("./Mobi/data/TMscore", outputFile, v);
-//
-//	Protein* traslata = new Protein();
-//
-//	for (unsigned int i = 0; i < prot.size()-1; i++)
-//		for (unsigned int j = i+1; j < prot.size(); j++)
-//			{
-//				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
-//						outputFile + (itosDEF(j)));
-//				if (traslata != NULL) {
-//
-//					prot.addModels(*(traslata->getSpacer(d)));
-//				} else
-//					ERROR("Errore nella creazione della proteina traslata",
-//							exeption);
-//
-//				prot.addModels(*(prot.getSpacer(j)));
-//
-//
-//			}
-//
-//  //prot.printModels(outputFile);
-//
-//	StandardDeviation std(prot, v);
-//	vector<double> SD;
-//
-//	vector<double> EVERAGE;
-//
-//	EVERAGE = std.get_everage_distance();
-//
+	unsigned int d = 0;
+
+	TmScore tm("./Mobi/data/TMscore", outputFile, v);
+
+	Protein* traslata = new Protein();
+
+	for (unsigned int i = 0; i < prot.size()-1; i++)
+		for (unsigned int j = i+1; j < prot.size(); j++)
+			{
+				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
+						outputFile + (itosDEF(j)));
+				if (traslata != NULL) {
+
+					prot.addModels(*(traslata->getSpacer(d)));
+				} else
+					ERROR("Errore nella creazione della proteina traslata",
+							exeption);
+
+				prot.addModels(*(prot.getSpacer(j)));
+
+
+			}
+
+  //prot.printModels(outputFile);
+
+	StandardDeviation std(prot, v);
+
+
+	vector<double> ever;
+
+	ever = std.get_everage_distance();
+
 //	cout << "EVERAGE" << endl;
-//		for (vector<double>::iterator everage = EVERAGE.begin(); everage != EVERAGE.end();
+//		for (vector<double>::iterator everage = ever.begin(); everage != ever.end();
 //				everage++) {
 //			cout << *everage << endl;
 //
 //		}
-//
-//
-//	SD = std.get_standard_deviation();
+
+	vector<double> SD;
+	SD = std.get_standard_deviation();
 //	cout << "STANDARD DEVIATION" << endl;
 //	for (vector<double>::iterator walk = SD.begin(); walk != SD.end();
 //			walk++) {
@@ -187,27 +194,23 @@ int main(int argc, char* argv[]) {
 ///////////////////////////////////////////////////
 
 
+	vector<double> ANGLE_PHI;
+	ANGLE_PHI=std.get_StandarDev_angle_PHI();
 
 
-//	StandardDeviation std(prot, v);
-//
-//	vector<double> ANGLE_PHI;
-//	ANGLE_PHI=std.get_StandarDev_angle_PHI();
-//
-//
-//	cout << "STANDARD DEVIATION" << endl;
+//	cout << "ANGLE PHI" << endl;
 //	for (vector<double>::iterator walk = ANGLE_PHI.begin(); walk != ANGLE_PHI.end();
 //			walk++) {
 //		cout << *walk << endl;
 //
 //	}
-//
-//
-//	vector<double> ANGLE_PSI;
-//		ANGLE_PSI=std.get_StandarDev_angle_PSI();
-//
-//
-//		cout << "STANDARD DEVIATION" << endl;
+
+
+	vector<double> ANGLE_PSI;
+	ANGLE_PSI=std.get_StandarDev_angle_PSI();
+
+
+//		cout << "ANGLE PSI" << endl;
 //		for (vector<double>::iterator walk = ANGLE_PSI.begin(); walk != ANGLE_PSI.end();
 //				walk++) {
 //			cout << *walk << endl;
@@ -217,11 +220,11 @@ int main(int argc, char* argv[]) {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-//	SecondaryStructure sstr (prot, v);
-//
-//	vector<char> MOB;
-//	MOB = sstr.getMobilitySecondaryStructure();
-//
+	SecondaryStructure sstr (prot, v);
+
+	vector<char> MOB;
+	MOB = sstr.getMobilitySecondaryStructure();
+
 //	cout << "\nSECONDARY STRUCTURE" << endl;
 //	for (vector<char>::iterator walk = MOB.begin(); walk != MOB.end(); walk++) {
 //		cout << *walk << " ";
@@ -234,7 +237,9 @@ int main(int argc, char* argv[]) {
 /////////////////////////////////////////////////////////////////////////////////////
 
     MobiSaver* saver = new MobiSaver(prot, outputFile, v);
-    saver->save_mob_everageScalD();
+    saver->save_allMobility(ever, SD, ANGLE_PHI, ANGLE_PSI, MOB);
+
+
     delete saver;
 
 	prot.remove(outputFile);

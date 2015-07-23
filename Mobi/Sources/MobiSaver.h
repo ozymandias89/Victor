@@ -27,7 +27,14 @@ public:
 	virtual ~MobiSaver();
 
 
-	virtual void save_mob_everageScalD();
+	void save_mob_everageScalD(vector <double> __everageDistance);
+	void save_mob_standardDeviation(vector <double> __Scale_distance);
+	void save_mob_angle_PHI(vector <double> __angle_PHI);
+	void save_mob_angle_PSI(vector <double> __angle_PSI);
+	void save_mob_SecondaryStructure(vector <char> __Mob_SecStructure);
+	void save_allMobility(vector<double> __everageDistance,
+			vector<double> __Scale_distance, vector<double> __angle_PHI,
+			vector<double> __angle_PSI, vector<char> __Mob_SecStructure);
 
 private:
 	bool verbose;
