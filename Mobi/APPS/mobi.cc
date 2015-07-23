@@ -26,6 +26,7 @@
 //
 // -----------------x-----------------------------------------------------------
 #include <ProteinModels.h>
+#include <MobiSaver.h>
 #include <SecondaryStructure.h>
 #include <TmScore.h>
 #include <string>
@@ -216,18 +217,25 @@ int main(int argc, char* argv[]) {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-	SecondaryStructure sstr (prot, v);
+//	SecondaryStructure sstr (prot, v);
+//
+//	vector<char> MOB;
+//	MOB = sstr.getMobilitySecondaryStructure();
+//
+//	cout << "\nSECONDARY STRUCTURE" << endl;
+//	for (vector<char>::iterator walk = MOB.begin(); walk != MOB.end(); walk++) {
+//		cout << *walk << " ";
+//
+//	}
+//
+//	cout << endl;
 
-	vector<char> MOB;
-	MOB = sstr.getMobilitySecondaryStructure();
 
-	cout << "\nSECONDARY STRUCTURE" << endl;
-	for (vector<char>::iterator walk = MOB.begin(); walk != MOB.end(); walk++) {
-		cout << *walk << " ";
+/////////////////////////////////////////////////////////////////////////////////////
 
-	}
-
-	cout << endl;
+    MobiSaver* saver = new MobiSaver(prot, outputFile, v);
+    saver->save_mob_everageScalD();
+    delete saver;
 
 	prot.remove(outputFile);
 

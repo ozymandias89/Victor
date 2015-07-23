@@ -75,6 +75,7 @@ private:
 public:
 	vector <Spacer> original_models;
 	vector <Spacer> models;
+	vector <char> sequence;
 
 };
 }

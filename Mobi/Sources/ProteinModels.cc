@@ -24,6 +24,9 @@ ProteinModels::~ProteinModels() {}
  * @return A pointer to the Spacer
  */
 void ProteinModels::load(PdbLoader& pl) {
+
+	unsigned int d=0;
+
 	if (!verbose)
 		pl.setNoVerbose();
 //Load Models
@@ -35,13 +38,21 @@ void ProteinModels::load(PdbLoader& pl) {
 		this->Protein::load(pl);
 	}
 
+	if (this->size()!=0){
+	//riempio il mio vettore dei modelli originali
 	for (unsigned int i = 0; i < this->size(); i++)
 		original_models.push_back(*(this->getSpacer(i)));
+
+	//riempio il mio vettore delle sequenze
+	for (unsigned int i = 0; i < this->getSpacer(d)->sizeAmino(); i++)
+			sequence.push_back(this->getSpacer(d)->getAmino(i).getType1L());
+
+
 
 
 	if (verbose)
 	 		 cout << "\n" << "Modelli caricati nella proteina" << endl;
-
+	}
 }
 
 
@@ -85,6 +96,7 @@ unsigned int ProteinModels::selectModels(PdbLoader& pl){
  */
 void ProteinModels::loadSameModels(PdbLoader& pl){
 
+		unsigned int d;
 		 unsigned int modelNum = selectModels(pl);
 
  		 for (unsigned int i=1; i<= modelNum; i++)
@@ -96,14 +108,18 @@ void ProteinModels::loadSameModels(PdbLoader& pl){
  		    	 this->Protein::load(pl);          // creates the Protein object
  		     }
 
+ 		 if (this->size()!=0){
  		for (unsigned int i = 0; i < this->size(); i++)
  				original_models.push_back(*(this->getSpacer(i)));
 
+ 		//riempio il mio vettore delle sequenze
+ 			for (unsigned int i = 0; i < this->getSpacer(d)->sizeAmino(); i++)
+ 					sequence.push_back(this->getSpacer(d)->getAmino(i).getType1L());
 
 
  		 if (verbose)
  		 cout << "\n" << "Modelli caricati nella proteina" << endl;
-
+ 		}
  }
 
 /*procedura che stampa su file il vettore di spacer*/
