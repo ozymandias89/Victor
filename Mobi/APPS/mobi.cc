@@ -224,7 +224,6 @@ int main(int argc, char* argv[]) {
 
 	vector<char> MOB;
 	MOB = sstr.getMobilitySecondaryStructure();
-
 //	cout << "\nSECONDARY STRUCTURE" << endl;
 //	for (vector<char>::iterator walk = MOB.begin(); walk != MOB.end(); walk++) {
 //		cout << *walk << " ";
@@ -237,7 +236,7 @@ int main(int argc, char* argv[]) {
 /////////////////////////////////////////////////////////////////////////////////////
 
     MobiSaver* saver = new MobiSaver(prot, outputFile, v);
-    saver->save_allMobility(ever, SD, ANGLE_PHI, ANGLE_PSI, MOB);
+    saver->allMobility(ever, SD, ANGLE_PHI, ANGLE_PSI, MOB);
 
 
     delete saver;

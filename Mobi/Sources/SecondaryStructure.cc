@@ -54,11 +54,9 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 		for (unsigned int j = 0; j < num_amino; j++) {
 			//mi tiro fuori il primo valore char e lo metto in un vettore di char
 			sec_Structures[j][i] = (*(vettore_di_supporto[j].begin()));
-			if (verbose)
-				cout << sec_Structures[j][i];
+
 		}
-		if (verbose)
-		cout  << endl;
+
 	}
 
 
@@ -123,7 +121,6 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 			}
 
 		}
-
 
 
 	return mobility;
