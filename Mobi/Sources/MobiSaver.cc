@@ -261,6 +261,123 @@ void MobiSaver::mob_eveScalD_filtSecS(vector <double> everageDistance, vector<ch
 }
 
 
+void MobiSaver::mob_eveScalD_filteredByPHI_PSI_standD(
+		vector<double> everageDistance, vector<double> angle_PHI,
+		vector<double> angle_PSI, vector<double> Scale_distance) {
+
+	vector<string> vettoreSupporto;
+
+	if (everageDistance.size() == 0 || angle_PHI.size() == 0
+			|| angle_PSI.size() == 0 || Scale_distance.size() == 0)
+		ERROR("One vectors is empty!", exception);
+
+	ofstream fout(out.c_str(), ofstream::app);
+
+	if (!fout)
+		ERROR("Could not open file for writing.", error);
+
+	if (verbose)
+		cout
+				<< "\n ### Save mobility from average Scale distance filtered by PHI PSI Standard deviation...  ###"
+				<< endl;
+
+	fout << endl;
+	fout << "> Average scale distance filtered with PHI PSI StdD 0" << endl;
+
+	const string filter1 = "MM.";
+	const string filter2 = ".MM";
+
+	for (vector<double>::iterator walk = everageDistance.begin();
+			walk != everageDistance.end(); walk++) {
+		if (*(walk) < 0.85)
+			vettoreSupporto.push_back("M");
+		else
+			vettoreSupporto.push_back(".");
+	}
+
+	string test;
+
+	vector<string>::iterator mob = vettoreSupporto.begin();
+	vector<double>::iterator phi = angle_PHI.begin();
+	vector<double>::iterator psi = angle_PSI.begin();
+	vector<double>::iterator stdD = Scale_distance.begin();
+
+	int i;
+	bool flag;
+	vector<string>::iterator j;
+	vector<double>::iterator h, s, d;
+
+	while (mob != vettoreSupporto.end()) {
+
+		i = 0;
+		flag = true;
+		test.clear();
+		j = mob;
+		h = phi;
+		s = psi;
+		d = stdD;
+
+		while (j != vettoreSupporto.end() && i < 3 && flag) {
+
+			test = test + (*(j));
+			if (verbose)
+				cout << test << endl;
+
+			if (test.compare(filter1) == 0) {
+				if (verbose) {
+					cout << "phi " << *(h) << " psi " << *(s) << " stdD "
+							<< *(d) << "Prev_psi" << *(s - 1) << endl;
+					cout << "Trovato" << test << endl;
+				}
+				if (*(h) > 20 && *(s) > 20 && *(d) > 0.09 && (*(s - 1) > 20))
+					flag = false;
+
+			} else if (test.compare(filter2) == 0) {
+				if (verbose) {
+					cout << "phi " << *(h - 2) << " psi " << *(s - 2)
+							<< " stdD " << *(d - 2) << "Prev_phi" << *(h - 1)
+							<< endl;
+					cout << "Trovato" << test << endl;
+				}
+				if (*(h - 2) > 20 && *(s - 2) > 20 && *(d - 2) > 0.09
+						&& (*(h - 1) > 20))
+					flag = false;
+
+			}
+
+			j++;
+			h++;
+			s++;
+			d++;
+			i++;
+		}
+
+		if (!flag) {
+			if (verbose)
+				cout << "###########MODIFICATO!!" << endl;
+
+			fout << "MMM";
+			mob = j;
+			phi = h;
+			psi = s;
+			stdD = d;
+
+		} else {
+			fout << *(mob);
+			mob++;
+		}
+
+	}
+
+	fout.close();
+
+	if (verbose)
+		cout
+				<< "Mobility from average Scale distance filtered by PHI PSI Standard deviation whith mask saved!"
+				<< endl;
+
+}
+
 void MobiSaver::mob_stanD_withMask(vector<double> Scale_distance) {
 
 	vector<string> vettoreSupporto;
@@ -328,10 +445,12 @@ void MobiSaver::mob_stanD_withMask(vector<double> Scale_distance) {
 		while (j != vettoreSupporto.end() && i < 6 && flag) {
 
 			test = test + (*(j));
+			if(verbose)
 			cout << test  << endl;
 			iter = map.find(test);
 			    if (iter != map.end()){
-			    	cout << "1111" << test << endl;
+			    	if(verbose)
+			    	cout << "Trovato" << test << endl;
 			        test = iter->second;
 			        flag=false;
 			    }
@@ -366,6 +485,7 @@ void MobiSaver::allMobility(vector<double> everageDistance,
 
 	mob_eveScalD(everageDistance);
 	mob_eveScalD_filtSecS(everageDistance, Mob_SecStructure);
+	mob_eveScalD_filteredByPHI_PSI_standD(everageDistance, angle_PHI, angle_PSI, Scale_distance);
 	mob_stanD(Scale_distance);
 	mob_stanD_withMask(Scale_distance);
 	mob_aPHI(angle_PHI);

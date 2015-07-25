@@ -29,6 +29,7 @@ public:
 
 	void mob_eveScalD(vector <double> __everageDistance);
 	void mob_eveScalD_filtSecS(vector <double> __everageDistance, vector<char> __mobSecS);
+	void mob_eveScalD_filteredByPHI_PSI_standD(vector <double> __everageDistance, vector <double> __angle_PHI, vector <double> __angle_PSI, vector <double> __Scale_distance);
 	void mob_stanD(vector <double> __Scale_distance);
 	void mob_stanD_withMask(vector <double> __Scale_distance);
 	void mob_aPHI(vector <double> __angle_PHI);
