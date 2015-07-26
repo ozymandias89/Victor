@@ -20,6 +20,8 @@
  * @date Lug 2015
  * @version 0.1
  */
+
+//Includes:
 #include <TmScore.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -35,27 +37,39 @@ using namespace std;
 
 const string TMTMP_OUT = "TMScore.pdb";
 
-
+/**
+ * @brief  Default Constructor
+ * @param _binary (string) full path to binary TMScore file, must have execution permission
+ * @param _tmp (string) full path to temp dir, must have write permission
+ * @param _tmp bool verbose
+ */
 TmScore::TmScore(string _binary, string output, bool verbose) :
-		binary(_binary), outputTmScore(output + TMTMP_OUT), verbose(verbose) {}
+		binary(_binary), outputTmScore(output + TMTMP_OUT), verbose(verbose) {
+}
 
 //TmScore::TmScore(string _binary, string output, bool verbose) :
 //		binary(_binary), tmp(output.substr(output.length() - 1, 1) == "/" ?
 //						output : output + "/"), verbose(verbose) {
 //}
 
-TmScore::~TmScore(){}
+TmScore::~TmScore() {
+}
 
-
-
+/**
+ *
+ * @param _binary (string) full path to binary TMScore file, must have execution permission
+ * @param _tmp string, path of model file, must have read permission
+ * @param _tmp string, path of native file, must have read permission
+ * @return (Protein*), return pointer to rototraslated protein
+ */
 Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 
 	Protein* prot = NULL;
-	//se i file sono accessibili in lettura
+	//if have read permission
 	if (access(modelFile.c_str(), R_OK) == 0
 			&& access(nativeFile.c_str(), R_OK) == 0) {
 
-		//se l'eseguibile ha i permessi di esecuzione
+		//if binary have execute permission
 		if (access(binary.c_str(), X_OK) == 0) {
 			pid_t pid;
 			//Pipeing TMS output
@@ -109,12 +123,10 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 						}
 					}
 
-
 					buffer.clear();
 
 					//Load from memory buffer
 					PdbLoader pl(buffer);
-
 
 					pl.setNoVerbose();
 
@@ -123,11 +135,7 @@ Protein* TmScore::TmImpose(string modelFile, string nativeFile) {
 
 					prot = new Protein();
 
-
-
 					pl.loadProtein(*prot);
-
-
 
 				}
 			}

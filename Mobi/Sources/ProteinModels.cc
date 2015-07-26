@@ -1,8 +1,30 @@
+/*
+ @file    ProteinModels.cc
+ @author  Riccardo Zanella, riccardozanella89@gmail.com
+ @version 1.0
+ */
+
+/*  This file is part of Victor.
+
+ Victor is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Victor is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Victor.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// Includes:
 #include <iostream>
 #include <ProteinModels.h>
 #include <String2Number.h>
 #include <PdbSaver.h>
-
 
 using namespace Victor;
 using namespace Victor::Mobi;
@@ -10,22 +32,41 @@ using namespace Victor::Biopool;
 
 const string PDB = ".pdb";
 
-ProteinModels::ProteinModels() : Protein(), verbose(false) {}
+// CONSTRUCTORS/DESTRUCTOR:
 
-ProteinModels::ProteinModels(const Protein& _orig) : Protein(_orig), verbose(false) {}
+/**
+ *   Default Constructor
+ * @param nothing.
+ */
+ProteinModels::ProteinModels() :
+		Protein(), verbose(false) {
+}
 
-ProteinModels::~ProteinModels() {}
+/**
+ *  Constructor. Copy another Protein object.
+ *@param Protein
+ */
+ProteinModels::ProteinModels(const Protein& _orig) :
+		Protein(_orig), verbose(false) {
+}
+
+/**
+ *  DESTRUCTOR
+ *@param none
+ */
+ProteinModels::~ProteinModels() {
+}
 
 // PREDICATES:
 
 /**
- *   Return a pointer to the Spacer with the requested chainID
- * @param c (char), the chainID
- * @return A pointer to the Spacer
+ Overloading method load, this method load all models in Protein Models Object
+ @param  (PdbLoader&) , object PdbLoader
+ @return void
  */
 void ProteinModels::load(PdbLoader& pl) {
 
-	unsigned int d=0;
+	unsigned int d = 0;
 
 	if (!verbose)
 		pl.setNoVerbose();
@@ -38,94 +79,86 @@ void ProteinModels::load(PdbLoader& pl) {
 		this->Protein::load(pl);
 	}
 
-	if (this->size()!=0){
-	//riempio il mio vettore dei modelli originali
-	for (unsigned int i = 0; i < this->size(); i++)
-		original_models.push_back(*(this->getSpacer(i)));
+	if (this->size() != 0) {
+		for (unsigned int i = 0; i < this->size(); i++)
+			original_models.push_back(*(this->getSpacer(i)));
 
-	//riempio il mio vettore delle sequenze
-	for (unsigned int i = 0; i < this->getSpacer(d)->sizeAmino(); i++)
+		for (unsigned int i = 0; i < this->getSpacer(d)->sizeAmino(); i++)
 			sequence.push_back(this->getSpacer(d)->getAmino(i).getType1L());
 
-
-
-
-	if (verbose)
-	 		 cout << "\n" << "Modelli caricati nella proteina" << endl;
+		if (verbose)
+			cout << "\n" << "Models load in protein" << endl;
 	}
 }
 
+/**
+ Chose how much models do you want load
+ @param  (PdbLoader&) , object PdbLoader
+ @return unsigned int
+ */
+unsigned int ProteinModels::selectModels(PdbLoader& pl) {
+
+	unsigned int modelNum;
+	string input;
+
+	cout << "Quanti ne vuoi caricare? Inserisci un valore compreso tra 2 e ";
+	cout << pl.getMaxModels() << endl;
+
+	getline(cin, input);
+
+	modelNum = stouiDEF(input);
+
+	while (modelNum > pl.getMaxModels() || modelNum < 2) {
+		cerr << "Number of models selected out of bounds! Reinput please..."
+				<< endl;
+		getline(cin, input);
+		modelNum = stouiDEF(input);
+
+	}
+
+	return modelNum;
+
+}
 
 /**
- *   Return a pointer to the Spacer with the requested chainID
- * @param c (char), the chainID
- * @return A pointer to the Spacer
+ Load same models
+ @param (PdbLoader&) , object PdbLoader
+ @return void
  */
-unsigned int ProteinModels::selectModels(PdbLoader& pl){
+void ProteinModels::loadSameModels(PdbLoader& pl) {
 
-	 unsigned int modelNum;
-	 string input;
+	unsigned int d;
+	unsigned int modelNum = selectModels(pl);
 
+	for (unsigned int i = 1; i <= modelNum; i++) {
+		if (verbose)
+			cout << "\t>>>model#" << i << endl;
+		pl.setModel(i);	//dal pdb loader scelgo il modello da caricare nella proteina
+		pl.checkModel();
+		this->Protein::load(pl);          // creates the Protein object
+	}
 
-	 cout << "Quanti ne vuoi caricare? Inserisci un valore compreso tra 2 e ";
-	 cout << pl.getMaxModels() << endl;
+	if (this->size() != 0) {
+		for (unsigned int i = 0; i < this->size(); i++)
+			original_models.push_back(*(this->getSpacer(i)));
 
+		for (unsigned int i = 0; i < this->getSpacer(d)->sizeAmino(); i++)
+			sequence.push_back(this->getSpacer(d)->getAmino(i).getType1L());
 
-	 getline(cin, input);
-
-
-	 modelNum = stouiDEF(input);
-
-	 while (modelNum > pl.getMaxModels() || modelNum < 2)
-		{
-		 cerr << "Number of models selected out of bounds! Reinput please..." << endl;
-		 getline(cin, input);
-		 modelNum = stouiDEF(input);
-
-		}
-
-	 return modelNum;
-
- }
-
+		if (verbose)
+			cout << "\n" << "Models load in protein" << endl;
+	}
+}
 
 /**
- *   Return a pointer to the Spacer with the requested chainID
- * @param c (char), the chainID
- * @return A pointer to the Spacer
+ Save vector of models in output file
+ @param (string output) , name of output file
+ @return void
  */
-void ProteinModels::loadSameModels(PdbLoader& pl){
+void ProteinModels::printModels(string outputFile) {
 
-		unsigned int d;
-		 unsigned int modelNum = selectModels(pl);
-
- 		 for (unsigned int i=1; i<= modelNum; i++)
- 		     {
- 			 	 if (verbose)
- 			 		 cout << "\t>>>model#" << i << endl;
- 		    	 pl.setModel(i);		  //dal pdb loader scelgo il modello da caricare nella proteina
- 		    	 pl.checkModel();
- 		    	 this->Protein::load(pl);          // creates the Protein object
- 		     }
-
- 		 if (this->size()!=0){
- 		for (unsigned int i = 0; i < this->size(); i++)
- 				original_models.push_back(*(this->getSpacer(i)));
-
- 		//riempio il mio vettore delle sequenze
- 			for (unsigned int i = 0; i < this->getSpacer(d)->sizeAmino(); i++)
- 					sequence.push_back(this->getSpacer(d)->getAmino(i).getType1L());
-
-
- 		 if (verbose)
- 		 cout << "\n" << "Modelli caricati nella proteina" << endl;
- 		}
- }
-
-/*procedura che stampa su file il vettore di spacer*/
-void ProteinModels::printModels(string outputFile){
-
-	ofstream fout;			//stream in output
+	/**stream in output*/
+	ofstream fout;
 	string outputFile_1;
 	PdbSaver ps(fout);
 	const string VECTOR = "Vector";
@@ -133,7 +166,7 @@ void ProteinModels::printModels(string outputFile){
 	unsigned int i = 0;
 
 	if (verbose)
-		cout<<"\n ###Salvataggio su file dei modelli ###"<<endl;
+		cout << "\n ###Save models on file ###" << endl;
 	vector<Spacer>::iterator walk = models.begin();
 	while (walk != models.end()) {
 
@@ -153,23 +186,28 @@ void ProteinModels::printModels(string outputFile){
 			fout.close();
 
 			if (verbose)
-				cout << "file chiuso" << endl;
+				cout << "file cloased" << endl;
 		}
 	}
 
 }
 
-void ProteinModels::save(string outputFile){
+/**
+ Overloading method save, save models in output file
+ @param (string output) , name of output file
+ @return void
+ */
+void ProteinModels::save(string outputFile) {
 
-	ofstream fout;			//stream in output
+	/**stream in output*/
+	ofstream fout;
 	string outputFile_1;
 	PdbSaver ps(fout);
 
 	if (verbose)
-				cout << "Salvataggio dei modelli su file..." << endl;
+		cout << "Save models on file..." << endl;
 	// Open the proper output stream (file or stdout)
 	for (unsigned int i = 0; i < this->size(); i++) {
-
 
 		outputFile_1 = outputFile + (itosDEF(i)) + PDB;
 
@@ -187,27 +225,30 @@ void ProteinModels::save(string outputFile){
 		fout.close();
 
 		if (verbose)
-			cout << "file chiuso." << endl;
+			cout << "file closed." << endl;
 	}
 	if (verbose)
-				cout << " " << endl;
+		cout << " " << endl;
 
 }
 
-
-
+/**
+ Remove file created by save method
+ @param (string output) , name of output file
+ @return void
+ */
 void ProteinModels::remove(string outputFile) {
 
 	string outputFile_1;
 
 	if (verbose)
-		cout << "Cancellazione file..." << endl;
+		cout << "Deleting file..." << endl;
 	// Open the proper output stream (file or stdout)
 	for (unsigned int i = 0; i < this->size(); i++) {
 
 		outputFile_1 = outputFile + (itosDEF(i)) + PDB;
-		if(std::remove(outputFile_1.c_str())!=0)
-			ERROR("File don't deleted! ",exception);
+		if (std::remove(outputFile_1.c_str()) != 0)
+			ERROR("File don't deleted! ", exception);
 
 	}
 	if (verbose)
@@ -215,12 +256,21 @@ void ProteinModels::remove(string outputFile) {
 
 }
 
-void ProteinModels::addModels(Spacer& sp){
+/**
+ Add Spacer in object ProteinModels
+ @param (Spacer&) , object Spacer
+ @return void
+ */
+void ProteinModels::addModels(Spacer& sp) {
 	this->models.push_back(sp);
 
 }
 
-
+/**
+ Get Spacer from Protein Models
+ @param (unsigned int) , number of Spacer (range 0/number Spacer)
+ @return Spacer
+ */
 Spacer ProteinModels::getModel(unsigned int u) {
 	return this->models[u];
 }

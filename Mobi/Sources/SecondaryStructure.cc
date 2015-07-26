@@ -1,24 +1,54 @@
 /*
- * SecondaryStructure.cc
- *
- *  Created on: 21 lug 2015
- *      Author: riccardo
+ @file    ProteinModels.cc
+ @author  Riccardo Zanella, riccardozanella89@gmail.com
+ @version 1.0
  */
 
+/*  This file is part of Victor.
 
+ Victor is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Victor is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Victor.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// Includes:
 #include "SecondaryStructure.h"
 
 using namespace Victor;
 using namespace Victor::Mobi;
 using namespace Victor::Biopool;
 
-SecondaryStructure::SecondaryStructure(const ProteinModels& modelli ,bool verbose) :
-	 verbose(verbose), models(modelli.original_models) {}
+// CONSTRUCTORS/DESTRUCTOR:
 
-SecondaryStructure::~SecondaryStructure() {}
+/**
+ *   Default Constructor
+ * 	 @param ( ProteinModels& ), object PreteinModels .
+ */
+SecondaryStructure::SecondaryStructure(const ProteinModels& modelli,
+		bool verbose) :
+		verbose(verbose), models(modelli.original_models) {
+}
 
+/**
+ *   Default Deconstructor
+ * 	 @param ( ProteinModels& ), object PreteinModels .
+ */
+SecondaryStructure::~SecondaryStructure() {
+}
 
-
+/**
+ * get the mobility analyzing secondary structures
+ * @return vector<char> , return vector of mobility from Secondary Structure
+ */
 vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 
 	mobility.clear();
@@ -26,9 +56,7 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 	if (models.size() != 0)
 		num_amino = models[0].sizeAmino();
 	else
-		ERROR(
-				"Nessun modello presente nella proteina, si ricorda di caricare dei modelli.",
-				exception);
+		ERROR("Nothing models in the protein, remember load models.", exception);
 
 	//create a support vector to get secondary structure
 	vector<set<char> > vettore_di_supporto(num_amino, set<char>());
@@ -45,7 +73,7 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 	for (unsigned int i = 0; i < models.size(); i++) {
 
 		if (verbose)
-			cout << "Models number: " << i <<endl;
+			cout << "Models number: " << i << endl;
 		models[i].setDSSP(false);
 		vettore_di_supporto = models[i].getDSSP();
 		//cout << "support vector size: " << vettore_di_supporto.size() << endl;
@@ -59,69 +87,62 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 
 	}
 
+	char test;
+	bool flag;
 
+	for (unsigned int i = 0; i < num_amino; i++) {
 
+		test = sec_Structures[i][0];
+		flag = true;
 
+		//if the first letter is empty or is a S
+		if ((test != 'G') && (test != 'H') && (test != 'I') && (test != 'T')
+				&& (test != 'E') && (test != 'B')) {
+			//verifing that is all S and/or empty space.
 
+			for (unsigned int j = 0; j < models.size(); j++) {
 
-		char test;
-		bool flag;
+				if ((sec_Structures[i][j] != 'G')
+						&& (sec_Structures[i][j] != 'H')
+						&& (sec_Structures[i][j] != 'I')
+						&& (sec_Structures[i][j] != 'T')
+						&& (sec_Structures[i][j] != 'E')
+						&& (sec_Structures[i][j] != 'B')) {
+				} else {
 
-		for (unsigned int i = 0; i < num_amino; i++) {
-
-			test = sec_Structures[i][0];
-			flag = true;
-
-			//se la prima lettera è vuota oppure è una S
-
-			if ((test != 'G') && (test != 'H') && (test != 'I') && (test != 'T')
-					&& (test != 'E') && (test != 'B')) {
-				//verifico che siano tutte S e/o vuote
-
-				for (unsigned int j = 0; j < models.size(); j++) {
-
-					if ((sec_Structures[i][j] != 'G')
-							&& (sec_Structures[i][j] != 'H')
-							&& (sec_Structures[i][j] != 'I')
-							&& (sec_Structures[i][j] != 'T')
-							&& (sec_Structures[i][j] != 'E')
-							&& (sec_Structures[i][j] != 'B')) {
-					} else {
-
-						mobility.push_back('M');
-						flag = false;
-						break;
-
-					}
+					mobility.push_back('M');
+					flag = false;
+					break;
 
 				}
-				if (flag) {
-					mobility.push_back('c');
-				}
-				//la prima lettera è una lettera di struttura
-			} else {
 
-				//verifico che siano tutte uguali a test
-				for (unsigned int j = 0; j < models.size(); j++) {
+			}
+			if (flag) {
+				mobility.push_back('c');
+			}
+			//the first letter is the letter of Secondary Structure
+		} else {
 
-					if ((sec_Structures[i][j] == test)) {
-					} else {
+			//verifing that all letter is the same
+			for (unsigned int j = 0; j < models.size(); j++) {
 
-						mobility.push_back('M');
-						flag = false;
-						break;
+				if ((sec_Structures[i][j] == test)) {
+				} else {
 
-					}
+					mobility.push_back('M');
+					flag = false;
+					break;
 
-				}
-				if (flag) {
-					mobility.push_back('.');
 				}
 
+			}
+			if (flag) {
+				mobility.push_back('.');
 			}
 
 		}
 
+	}
 
 	return mobility;
 }

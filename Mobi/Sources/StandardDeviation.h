@@ -30,41 +30,39 @@ using namespace Victor::Biopool;
 
 namespace Victor {
 namespace Mobi {
-/**
- * @brief Extends Protein class with functionalities related to manipulation of NMR model and models comparations.
- * Scale Distance metric is provided.
- */
+
 class StandardDeviation {
+
+	/**
+	 * @brief Extends Protein class with functionalities related to manipulation of NMR model and models comparations.
+	 * Scale Distance metric is provided.
+	 */
 
 public:
 
 	// CONSTRUCTORS/DESTRUCTOR:
-	StandardDeviation(const ProteinModels& _orig , bool _verbose = false);
+	StandardDeviation(const ProteinModels& _orig, bool _verbose = false);
 
 	virtual ~StandardDeviation();
 
-
-	vector <double> get_everage_distance();
-	vector <double> get_standard_deviation();
-	vector <double> get_StandarDev_angle_PHI();
-	vector <double> get_StandarDev_angle_PSI();
-
+	vector<double> get_everage_distance();
+	vector<double> get_standard_deviation();
+	vector<double> get_StandarDev_angle_PHI();
+	vector<double> get_StandarDev_angle_PSI();
 
 private:
-	void getCaAtom (Spacer* s, bool flag);
-
+	void getCaAtom(Spacer* s, bool flag);
 
 private:
 	bool verbose;
-	vector <Spacer> original_models;
-	vector <Spacer> models;
-	vector <Atom> CaVector1, CaVector2;
-	vector < vector<double> > dist_from_Ca_atoms;
-	vector <double> dist_everage;
-	vector <double> ScD;
-	vector <double> angle_PHI;
-	vector <double> angle_PSI;
-
+	vector<Spacer> original_models;
+	vector<Spacer> models;
+	vector<Atom> CaVector1, CaVector2;
+	vector<vector<double> > dist_from_Ca_atoms;
+	vector<double> dist_everage;
+	vector<double> ScD;
+	vector<double> angle_PHI;
+	vector<double> angle_PSI;
 
 };
 }

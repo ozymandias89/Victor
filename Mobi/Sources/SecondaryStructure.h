@@ -18,36 +18,36 @@
  * @version 0.1
  */
 
-/*
- * SecondaryStructure.h
- *
- *  Created on: 21 lug 2015
- *      Author: riccardo
- */
-
+// Includes:
 #ifndef MOBI_SOURCES_SECONDARYSTRUCTURE_H_
 #define MOBI_SOURCES_SECONDARYSTRUCTURE_H_
 
-
 #include<ProteinModels.h>
-
 
 using namespace Victor::Biopool;
 
 namespace Victor {
 namespace Mobi {
 
+/**@brief Implements a Secondary Structure.
+ * Includes methods to obtain mobility from the analyze of Secondary Structure.
+ */
+
 class SecondaryStructure {
 public:
-	SecondaryStructure(const ProteinModels& _orig , bool _verbose = false);
+
+	// CONSTRUCTORS/DESTRUCTOR:
+
+	SecondaryStructure(const ProteinModels& _orig, bool _verbose = false);
 	virtual ~SecondaryStructure();
 
-	vector <char> getMobilitySecondaryStructure();
+	// PREDICATES:
+	vector<char> getMobilitySecondaryStructure();
 
 private:
 	bool verbose;
-	vector <Spacer> models;
-	vector <char> mobility;
+	vector<Spacer> models;
+	vector<char> mobility;
 
 };
 }

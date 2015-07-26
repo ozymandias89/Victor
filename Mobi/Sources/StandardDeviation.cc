@@ -1,22 +1,56 @@
 /*
- * ScaleDistance.cc
- *
- *  Created on: 11 lug 2015
- *      Author: riccardo
+ @file    StandardDeviation.cc
+ @author  Riccardo Zanella, riccardozanella89@gmail.com
+ @version 1.0
  */
+
+/*  This file is part of Victor.
+
+ Victor is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Victor is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Victor.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// Includes:
 #include "StandardDeviation.h"
 
 using namespace Victor;
 using namespace Victor::Mobi;
 using namespace Victor::Biopool;
 
-StandardDeviation::StandardDeviation(const ProteinModels& modelli ,bool verbose) :
-	 verbose(verbose), original_models(modelli.original_models) ,models(modelli.models) {}
+// CONSTRUCTORS/DESTRUCTOR:
 
+/**
+ *   Default Constructor
+ * @param (const ProteinModels&), object ProteinModels
+ * @param (bool verbose),  verbose
+ */
+StandardDeviation::StandardDeviation(const ProteinModels& modelli, bool verbose) :
+		verbose(verbose), original_models(modelli.original_models), models(
+				modelli.models) {
+}
+
+/**
+ *  DESTRUCTOR
+ *@param none
+ */
 StandardDeviation::~StandardDeviation() {
 }
 
-
+/**
+ * internal method, take atom from spacer
+ * @param (Spacer* s), pointer to the spacer object
+ * @param (bool flag),  internal flag
+ */
 void StandardDeviation::getCaAtom(Spacer* s, bool flag) {
 
 //per un modello fissato creo il vettore di atomi
@@ -24,7 +58,6 @@ void StandardDeviation::getCaAtom(Spacer* s, bool flag) {
 
 	for (unsigned int u = 0; u < s->sizeAmino(); u++) {
 		a = &(s->getAmino(u));
-
 
 		unsigned int i = 1;
 
@@ -40,200 +73,184 @@ void StandardDeviation::getCaAtom(Spacer* s, bool flag) {
 
 }
 
-vector <double> StandardDeviation::get_everage_distance(){
+/**
+ * Get average distance Scale Distance
+ * @return vector <double>
+ *
+ */
+vector<double> StandardDeviation::get_everage_distance() {
 
+	/** vector average Scale Distance*/
 	dist_everage.clear();
 
 	Spacer* primo_modello = new Spacer;
 	Spacer* secondo_modello = new Spacer;
 
-			unsigned int num_atomi = 0;
-			double ScalD, distance= -1.0;
+	unsigned int num_atomi = 0;
+	double ScalD, distance = -1.0;
 
-			if (models.size() != 0)
-				num_atomi = models[0].sizeAmino();
-			else
-				ERROR("Nessun modello presente nella proteina, si ricorda di eseguire TmImpose.", exception);
+	if (models.size() != 0)
+		num_atomi = models[0].sizeAmino();
+	else
+		ERROR("ProteinModels empty, remember execute TmImpose.", exception);
 
+	vector<vector<double> > dist_from_Ca_atoms(num_atomi, vector<double>(0.0));
 
+	if (verbose) {
+		cout << "Number of models: " << models.size() << endl;
+		cout << "Number of atoms in each models: " << num_atomi << endl;
+	}
 
+	//for any models create atom's vector
+	unsigned int u = 0;
 
-			vector<vector<double> > dist_from_Ca_atoms(num_atomi,
-					vector<double>(0.0));
+	while (u < (models.size())) {
 
+		primo_modello = &models[u];
+		getCaAtom(primo_modello, true);
+		u++;
 
+		secondo_modello = &models[u];
+		getCaAtom(secondo_modello, false);
+		u++;
 
-			if (verbose){
-				cout << "Numero di modelli presenti: " << models.size() << endl;
-				cout << "Ogni modello ha un numero di atomi pari a: " << num_atomi << endl;
-			}
-			//scorro i modelli e per ognuno creo il vettore di atomi
-			unsigned int u = 0;
+		for (unsigned int i = 0; i < num_atomi; i++) {
+			distance = CaVector1[i].distance(CaVector2[i]);
+			ScalD = 1.0 / (1.0 + (pow((distance / 4.0), 2.0)));
+			dist_from_Ca_atoms[i].push_back(ScalD);
+		}
 
-			while (u < (models.size())) {
+		CaVector1.clear();
+		CaVector2.clear();
 
-				primo_modello = &models[u];
-				getCaAtom(primo_modello, true);
-				u++;
+	}
 
-				secondo_modello = &models[u];
-				getCaAtom(secondo_modello, false);
-				u++;
+	int count;
+	double sum;
+	for (unsigned int i = 0; i < num_atomi; i++) {
+		count = 0;
+		sum = 0;
+		vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
+		while (atom != dist_from_Ca_atoms[i].end()) {
 
+			sum = sum + (*atom);
 
-				for (unsigned int i = 0; i < num_atomi; i++) {
-					distance = CaVector1[i].distance(CaVector2[i]);
-					ScalD = 1.0 / (1.0 + ( pow ((distance/4.0), 2.0)));
-					dist_from_Ca_atoms[i].push_back(ScalD);
-					}
+			atom++;
+			count++;
+		}
+		dist_everage.push_back((sum / count));
 
+	}
 
-				CaVector1.clear();
-				CaVector2.clear();
-
-			}
-
-
-
-				int count;
-				double sum;
-				for (unsigned int i = 0; i < num_atomi; i++) {
-					count=0;
-					sum=0;
-					vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
-					while (atom != dist_from_Ca_atoms[i].end()){
-
-						sum = sum + (*atom);
-
-						atom++;
-						count++;
-					}
-					dist_everage.push_back((sum / count));
-
-
-				}
-
-return dist_everage;
+	return dist_everage;
 
 }
 
-vector <double> StandardDeviation::get_standard_deviation(){
+/**
+ * Get standard deviation from Scale Distance
+ * @return vector <double>
+ */
+vector<double> StandardDeviation::get_standard_deviation() {
 
 	dist_everage.clear();
 	ScD.clear();
 
 	Spacer* primo_modello = new Spacer;
-		Spacer* secondo_modello = new Spacer;
+	Spacer* secondo_modello = new Spacer;
 
-		unsigned int num_atomi = 0;
-		double ScalD, distance= -1.0;
+	unsigned int num_atomi = 0;
+	double ScalD, distance = -1.0;
 
-		if (models.size() != 0)
-			num_atomi = models[0].sizeAmino();
-		else
-			ERROR("Nessun modello presente nella proteina, si ricorda di eseguire TmImpose.", exception);
+	if (models.size() != 0)
+		num_atomi = models[0].sizeAmino();
+	else
+		ERROR("ProteinModels empty, remember execute TmImpose.", exception);
 
+	vector<vector<double> > dist_from_Ca_atoms(num_atomi, vector<double>(0.0));
 
+	if (verbose) {
+		cout << "Number of models: " << models.size() << endl;
+		cout << "Number of atoms in each models: " << num_atomi << endl;
+	}
+	//scorro i modelli e per ognuno creo il vettore di atomi
+	unsigned int u = 0;
 
+	while (u < (models.size())) {
 
-		vector<vector<double> > dist_from_Ca_atoms(num_atomi,
-				vector<double>(0.0));
+		primo_modello = &models[u];
+		getCaAtom(primo_modello, true);
+		u++;
 
+		secondo_modello = &models[u];
+		getCaAtom(secondo_modello, false);
+		u++;
 
-
-		if (verbose){
-			cout << "Numero di modelli presenti: " << models.size() << endl;
-			cout << "Ogni modello ha un numero di atomi pari a: " << num_atomi << endl;
-		}
-		//scorro i modelli e per ognuno creo il vettore di atomi
-		unsigned int u = 0;
-
-		while (u < (models.size())) {
-
-			primo_modello = &models[u];
-			getCaAtom(primo_modello, true);
-			u++;
-
-			secondo_modello = &models[u];
-			getCaAtom(secondo_modello, false);
-			u++;
-
-
-			for (unsigned int i = 0; i < num_atomi; i++) {
-				distance = CaVector1[i].distance(CaVector2[i]);
-				ScalD = 1.0 / (1.0 + ( pow ((distance/4.0), 2.0)));
-				dist_from_Ca_atoms[i].push_back(ScalD);
-				}
-
-
-			CaVector1.clear();
-			CaVector2.clear();
-
+		for (unsigned int i = 0; i < num_atomi; i++) {
+			distance = CaVector1[i].distance(CaVector2[i]);
+			ScalD = 1.0 / (1.0 + (pow((distance / 4.0), 2.0)));
+			dist_from_Ca_atoms[i].push_back(ScalD);
 		}
 
+		CaVector1.clear();
+		CaVector2.clear();
 
+	}
 
-			int count;
-			double sum;
-			for (unsigned int i = 0; i < num_atomi; i++) {
-				count=0;
-				sum=0;
-				vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
-				while (atom != dist_from_Ca_atoms[i].end()){
+	int count;
+	double sum;
+	for (unsigned int i = 0; i < num_atomi; i++) {
+		count = 0;
+		sum = 0;
+		vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
+		while (atom != dist_from_Ca_atoms[i].end()) {
 
-					sum = sum + (*atom);
+			sum = sum + (*atom);
 
-					atom++;
-					count++;
-				}
-				dist_everage.push_back((sum / count));
+			atom++;
+			count++;
+		}
+		dist_everage.push_back((sum / count));
 
+	}
 
-			}
+	double standDev = -1;
 
+	vector<double>::iterator everage = dist_everage.begin();
 
+	for (unsigned int i = 0; i < num_atomi; i++) {
+		sum = 0;
+		count = 0;
+		vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
 
-				double standDev=-1;
+		while (atom != dist_from_Ca_atoms[i].end()) {
+			sum += (pow(((*atom) - (*everage)), 2.0));
+			atom++;
+			count++;
 
+		}
 
-				vector<double>::iterator everage = dist_everage.begin();
+		standDev = sqrt(sum / count);
 
-				for (unsigned int i = 0; i < num_atomi; i++) {
-					sum=0;
-					count=0;
-					vector<double>::iterator atom = dist_from_Ca_atoms[i].begin();
+		ScD.push_back(standDev);
 
+		everage++;
 
-					while (atom != dist_from_Ca_atoms[i].end()){
-						sum += (pow ( ((*atom) - (*everage) ) , 2.0 ));
-								atom++;
-								count++;
-
-					}
-
-					standDev = sqrt(sum / count);
-
-					ScD.push_back(standDev);
-
-					everage++;
-
-
-				}
-
+	}
 
 	return ScD;
 }
 
-
+/**
+ * Get standard deviation from angle_PHI
+ * @return vector <double>
+ */
 vector<double> StandardDeviation::get_StandarDev_angle_PHI() {
 
 	double num_amino = 0;
 	double sum = 0;
 
-	//cout << "modelli"  << original_models.size()  << "aminoacidi" << original_models[0].sizeAmino() << endl;
-
 	if (original_models.size() < 2)
-		ERROR("Modelli insufficienti", exception)
+		ERROR("Number of models insufficient", exception)
 	else
 		num_amino = original_models[0].sizeAmino();
 
@@ -242,12 +259,12 @@ vector<double> StandardDeviation::get_StandarDev_angle_PHI() {
 			vector<double>(original_models.size()));
 	vector<double> everage(num_amino);
 
-//calcolo angoli
+//calculate angle
 	for (unsigned int i = 0; i < original_models.size(); i++)
 		for (unsigned int j = 0; j < num_amino; j++)
 			misure_PHI[j][i] = original_models[i].getAmino(j).getPhi();
 
-//calcolo media angoli
+//calculate average angle
 	for (unsigned int j = 0; j < num_amino; j++) {
 		sum = 0;
 
@@ -259,7 +276,7 @@ vector<double> StandardDeviation::get_StandarDev_angle_PHI() {
 
 	}
 
-	//calcolo stadDev
+	//calculate stadDev
 	double standDev = -1;
 
 	for (unsigned int j = 0; j < num_amino; j++) {
@@ -277,16 +294,17 @@ vector<double> StandardDeviation::get_StandarDev_angle_PHI() {
 
 }
 
-
+/**
+ * Get standard deviation from angle_PSI
+ * @return vector <double>
+ */
 vector<double> StandardDeviation::get_StandarDev_angle_PSI() {
 
 	double num_amino = 0;
 	double sum = 0;
 
-	//cout << "modelli"  << original_models.size()  << "aminoacidi" << original_models[0].sizeAmino() << endl;
-
 	if (original_models.size() < 2)
-		ERROR("Modelli insufficienti", exception)
+		ERROR("Number of models insufficient", exception)
 	else
 		num_amino = original_models[0].sizeAmino();
 
@@ -329,7 +347,3 @@ vector<double> StandardDeviation::get_StandarDev_angle_PSI() {
 	return angle_PSI;
 
 }
-
-
-
-
