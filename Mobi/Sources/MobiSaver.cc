@@ -40,8 +40,11 @@ const string OUT = "ResultMobi.fasta";
  * 	 @param double anglePHI, default = 20
  * 	 @param double anglePSI, default = 20
  */
-MobiSaver::MobiSaver(ProteinModels prot, string output, bool verbose, double boundSD, double boundStandD, double anglePHI, double anglePSI) :
-		Saver(), verbose(verbose), ScalD (boundSD), StandD (boundStandD), angPHI(anglePHI), angPSI(anglePSI) {
+MobiSaver::MobiSaver(ProteinModels prot, string output, ofstream& stream,
+		bool verbose, double boundSD, double boundStandD, double anglePHI,
+		double anglePSI) :
+		PdbSaver(stream), verbose(verbose), ScalD(boundSD), StandD(boundStandD), angPHI(
+				anglePHI), angPSI(anglePSI) {
 	// TODO Auto-generated constructor stub
 
 	//if file does not exist then create and insert aminoacid sequence in head otherwise don't create file
@@ -101,9 +104,7 @@ void MobiSaver::mob_eveScalD(vector<double> everageDistance) {
 		ERROR("Could not open file for writing.", error);
 
 	if (verbose)
-		cout
-				<< "\n ### Save mobility from average distance ###"
-				<< endl;
+		cout << "\n ### Save mobility from average distance ###" << endl;
 
 	fout << endl;
 	fout << "> Average scale distance 0" << endl;
@@ -384,7 +385,8 @@ void MobiSaver::mob_eveScalD_filteredByPHI_PSI_standD(
 			test = test + (*(j));
 
 			if (test.compare(filter1) == 0) {
-				if (*(h) > angPHI && *(s) > angPSI && *(d) > StandD && (*(s - 1) > angPSI))
+				if (*(h) > angPHI && *(s) > angPSI && *(d) > StandD
+						&& (*(s - 1) > angPSI))
 					flag = false;
 
 			} else if (test.compare(filter2) == 0) {
@@ -543,5 +545,99 @@ void MobiSaver::allMobility(vector<double> everageDistance,
 	mob_aPHI(angle_PHI);
 	mob_aPSI(angle_PSI);
 	mob_SecS(Mob_SecStructure);
+
+}
+
+/**
+ * Method that shadow save Protein of PdbSaver, this method save in .pdb format
+ * all  original models in ProteinModels with column standard deviation modified
+ * and column B factor modified with average scaled distance.
+ * @param ProteinModels , object ProteinModels
+ * @param vector <double>,  vector average scaled distance
+ * @param vector <double>,  vector standard deviation
+ *  @return void
+ */
+
+void MobiSaver::saveProtein(ProteinModels prot,
+		vector<double> everageDistance, vector<double> Scale_distance) {
+
+	if (everageDistance.size() == 0 || Scale_distance.size() == 0)
+		ERROR("One vector is empty!", exception);
+
+	vector<double>::iterator walk;
+	vector<double>::iterator walk2;
+
+	if (verbose)
+		cout << "\n ### Save Pdb file with column b factor modify ###" << endl;
+
+	output << "REMARK   1  template_A_NMRMOV.pdb" << "\n"
+			<< "REMARK   2 B-factors changed to averaged Scaled Distance x 100 \n"
+			<< "REMARK   3 after TMScore super imposition with d0 = 4.0; Occupancy changed to SD \n";
+
+	int g;
+	for (unsigned int i = 0; i < prot.original_models.size(); i++) {
+		if (prot.original_models[i].size() > 0) {
+
+			aminoOffset = 1;
+			g = i + 1;
+			output << "MODEL        " << g << endl;
+			//method of class Component. It checks how deep is the spacer
+
+			walk = everageDistance.begin();
+			walk2 = Scale_distance.begin();
+			//saving is one ammino at a time
+			for (unsigned int j = 0; j < prot.original_models[i].sizeAmino();
+					j++) {
+				AminoAcid gr = prot.original_models[i].getAmino(j);
+				gr.sync();
+
+				for (unsigned int y = 0; y < gr.size(); y++) {
+					string atName = gr[y].getType();
+
+					if (atName == "OXT") // cosmetics: OXT has to be output after
+						continue; // the sidechain and therefore goes in saveSpacer
+
+					// Added variable for correcting atom type H (last column in PDBs)
+					char atomOneLetter;
+					if (!isdigit(atName[0])) {
+						atomOneLetter = atName[0];
+					} else {
+						atomOneLetter = atName[1];
+					}
+
+					// Added control for size by Damiano Piovesan
+					// example HG12
+					if (!isdigit(atName[0]) && (atName.size() < 4))
+						atName = ' ' + atName;
+					while (atName.size() < 4)
+						atName += ' ';
+
+					output << "ATOM" << setw(7) << gr[y].getNumber() << " "
+							<< atName << " " << gr.getType() << " " << chain
+							<< setw(4) << aminoOffset << "    " << setw(8)
+							<< setprecision(3) << gr[y].getCoords().x << setw(8)
+							<< setprecision(3) << gr[y].getCoords().y << setw(8)
+							<< setprecision(3) << gr[y].getCoords().z << "   "
+							<< fixed << setprecision(2)<< *(walk2)
+							<< setw(6) << fixed << setprecision(2)
+							<< (*(walk) * 100) << "           " << atomOneLetter << "\n";
+
+					atomOffset = gr[y].getNumber() + 1;
+
+				}
+				walk++;
+				walk2++;
+				aminoOffset++;
+			}
+
+			output << "ENDMODL\n";
+		}
+
+	}
+
+	endFile();
+
+	if (verbose)
+		cout << "Pdb file saved!" << endl;
 
 }

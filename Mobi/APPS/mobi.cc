@@ -47,6 +47,8 @@ using namespace Victor;
 using namespace Victor::Biopool;
 using namespace Victor::Mobi;
 
+const string OUTPDB = "ResultMobi.pdb";
+
 void sShowHelp() {
 
 	cout << "NAME" << endl;
@@ -271,15 +273,21 @@ int main(int argc, char* argv[]) {
 	// 6. MobiSaver object save mobility in output file
 	// --------------------------------------------------
 
-	MobiSaver* saver = new MobiSaver(prot, outputFile, v, ScalD, StandD , anglePHI, anglePSI);
+	string out_pdb = outputFile + OUTPDB;
+	ofstream ofstream(out_pdb.c_str(), ofstream::app);
+
+	MobiSaver* saver = new MobiSaver(prot, outputFile, ofstream,  v, ScalD, StandD , anglePHI, anglePSI);
 	saver->allMobility(ever, SD, ANGLE_PHI, ANGLE_PSI, MOB);
 
-	delete saver;
 
 	prot.remove(outputFile);
 	//remove trash file
 	outputFile = outputFile + "TMScore.pdb_atm";
 	remove(outputFile.c_str());
+
+	saver-> saveProtein(prot, ever, SD);
+
+	delete saver;
 
 	return 0;
 }

@@ -92,7 +92,8 @@ void ProteinModels::load(PdbLoader& pl) {
 }
 
 /**
- Chose how much models do you want load
+ Internal method
+ Chose how much models do you want loa
  @param  (PdbLoader&) , object PdbLoader
  @return unsigned int
  */

@@ -48,10 +48,14 @@ public:
 
 	virtual void load(PdbLoader& pl);
 
-	unsigned int selectModels(PdbLoader& pl);
 
 	void loadSameModels(PdbLoader& pl);
 
+
+private:
+	unsigned int selectModels(PdbLoader& pl);
+
+public:
 	// MODIFIERS:
 
 	/**
@@ -71,8 +75,10 @@ public:
 
 	void printModels(string outputFile);
 
+
 	// MODIFIERS:
 private:
+
 	bool verbose;
 
 public:

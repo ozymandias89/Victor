@@ -26,7 +26,7 @@
 #define MOBI_SOURCES_MOBISAVER_H_
 
 //Includes:
-#include <Saver.h>
+#include <PdbSaver.h>
 #include <ProteinModels.h>
 #include <vector>
 #include <iterator>
@@ -40,16 +40,16 @@ namespace Victor {
 namespace Mobi {
 
 /**@brief Implements a MobiSaver.
- * This class inherit Saver class. This class allow to Saver in output file all type of vector generated from
+ * This class inherit PdbSaver class. This class allow to Saver in output file all type of vector generated from
  * Standard Deviation and SecondaryStructure classes to have the mobility.
  * You can save Mobility also filtered by same type of mask.
  */
 
-class MobiSaver : public Saver{
+class MobiSaver : public PdbSaver{
 public:
 
 	// CONSTRUCTORS/DESTRUCTOR:
-	MobiSaver(ProteinModels __protein,string __output, bool __verbose = false, double __boundSD = 0.85, double __boundStandD = 0.09, double __anglePHI = 20, double __anglePSI = 20);
+	MobiSaver(ProteinModels __protein,string __output, ofstream& __stream, bool __verbose = false, double __boundSD = 0.85, double __boundStandD = 0.09, double __anglePHI = 20, double __anglePSI = 20);
 	virtual ~MobiSaver();
 
 	// PREDICATES:
@@ -65,6 +65,7 @@ public:
 	void allMobility(vector<double> __everageDistance,
 			vector<double> __Scale_distance, vector<double> __angle_PHI,
 			vector<double> __angle_PSI, vector<char> __Mob_SecStructure);
+	virtual void saveProtein(ProteinModels __protein, vector<double> __everageDistance, vector<double> __StandardDeviation);
 
 private:
 	bool verbose;

@@ -108,8 +108,6 @@ namespace Victor { namespace Biopool {
 
     protected:
 
-    private:
-
         // HELPERS:
         void writeSeqRes(Spacer& sp); // writes SEQRES entry
         void writeSecondary(Spacer& sp);

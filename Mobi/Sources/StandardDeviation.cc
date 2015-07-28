@@ -81,7 +81,7 @@ void StandardDeviation::getCaAtom(Spacer* s, bool flag) {
 vector<double> StandardDeviation::get_everage_distance() {
 
 	if (verbose)
-			cout << "### Start average distance standard deviation ###" << endl;
+			cout << "### Start average distance scale distance ###" << endl;
 	/** vector average Scale Distance*/
 	dist_everage.clear();
 
