@@ -277,6 +277,9 @@ int main(int argc, char* argv[]) {
 	delete saver;
 
 	prot.remove(outputFile);
+	//remove trash file
+	outputFile = outputFile + "TMScore.pdb_atm";
+	remove(outputFile.c_str());
 
 	return 0;
 }
