@@ -117,10 +117,10 @@ int main(int argc, char* argv[]) {
 	// --------------------------------------------------
 
 	do {
-		cout << "Questo file pdb contiene ";
+		cout << "This file include: ";
 		cout << pl.getMaxModels() << endl;
 
-		cout << "Vuoi caricare tutti i modelli? [y/n]" << endl;
+		cout << "Do you want load all models? [y/n]" << endl;
 		getline(cin, input);
 		//		cin >> input;
 
@@ -172,7 +172,7 @@ int main(int argc, char* argv[]) {
 
 				prot.addModels(*(traslata->getSpacer(d)));
 			} else
-				ERROR("Errore nella creazione della proteina traslata",
+				ERROR("Error in the creation of shift models.",
 						exeption);
 
 			prot.addModels(*(prot.getSpacer(j)));

@@ -68,6 +68,17 @@ namespace Victor { namespace Biopool {
         void deleteComponent(Component* c);
 
         void copy(const Protein& orig);
+
+        /**
+         * load one model by Loader object. Use after command PdbLoader.setModel(i) , PdbLoader.checkModel();
+         * @code
+         * 	Loader.setModel(i);
+			Loader.checkModel();
+			this->load(Loader);
+         * @endcode
+         * @param Loader& , loader object
+         * @return void
+         */
         virtual void load(Loader& l); // data loader
 
         virtual Protein* clone();

@@ -56,6 +56,11 @@ namespace Victor { namespace Biopool {
 
         // PREDICATES:
 
+        /**
+        	 close the output file
+         	 @param  none
+        	 @return void
+        */
         void endFile() {
             output << "END\n";
         }

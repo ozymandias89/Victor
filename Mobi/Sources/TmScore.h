@@ -51,6 +51,11 @@ public:
 	Protein* TmImpose(string modelFile, string nativeFile);
 
 	// MODIFIERS:
+	/**
+		 You can chose if you want verbose output from this class
+		 @param  none
+		 @return void
+		 */
 	void setVerbose(bool v) {
 		verbose = v;
 	}

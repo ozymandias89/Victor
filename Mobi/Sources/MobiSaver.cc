@@ -32,7 +32,7 @@ const string OUT = "ResultMobi.fasta";
 
 /**
  *   Default Constructor
- * 	 @param ( ProteinModels& ), object PreteinModels
+ * 	 @param  ProteinModels& , object PreteinModels
  * 	 @param  string output, path file output
  * 	 @param  bool verbose , verbose
  */
@@ -40,7 +40,7 @@ MobiSaver::MobiSaver(ProteinModels prot, string output, bool verbose) :
 		Saver(), verbose(verbose) {
 	// TODO Auto-generated constructor stub
 
-	//Se il file non esiste lo creo inserendo la sequenza aminoacidica in testa altrimenti non creo nulla
+	//if file does not exist then create and insert aminoacid sequence in head otherwise don't create file
 	out = output + OUT;
 
 	if (access(out.c_str(), F_OK) != 0) {
@@ -526,7 +526,7 @@ void MobiSaver::mob_stanD_withMask(vector<double> Scale_distance) {
  * @param vector <double>,  vector Scaled Distance
  * @param vector <double>, angle phi
  * @param vector <double>, angle psi
- * @param vector<char> , secondary structures
+ * @param vector <char> , secondary structures
  *
  * @return void
  */
