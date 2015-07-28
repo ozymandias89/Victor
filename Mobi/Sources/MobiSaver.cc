@@ -35,9 +35,13 @@ const string OUT = "ResultMobi.fasta";
  * 	 @param  ProteinModels& , object PreteinModels
  * 	 @param  string output, path file output
  * 	 @param  bool verbose , verbose
+ * 	 @param double boundSD, default = 0.85
+ * 	 @param double boundStandD, default = 0.09
+ * 	 @param double anglePHI, default = 20
+ * 	 @param double anglePSI, default = 20
  */
-MobiSaver::MobiSaver(ProteinModels prot, string output, bool verbose) :
-		Saver(), verbose(verbose) {
+MobiSaver::MobiSaver(ProteinModels prot, string output, bool verbose, double boundSD, double boundStandD, double anglePHI, double anglePSI) :
+		Saver(), verbose(verbose), ScalD (boundSD), StandD (boundStandD), angPHI(anglePHI), angPSI(anglePSI) {
 	// TODO Auto-generated constructor stub
 
 	//if file does not exist then create and insert aminoacid sequence in head otherwise don't create file
@@ -98,7 +102,7 @@ void MobiSaver::mob_eveScalD(vector<double> everageDistance) {
 
 	if (verbose)
 		cout
-				<< "\n ### Salvataggio sul file della mobilità data la distanza media ###"
+				<< "\n ### Save mobility from average distance ###"
 				<< endl;
 
 	fout << endl;
@@ -106,7 +110,7 @@ void MobiSaver::mob_eveScalD(vector<double> everageDistance) {
 
 	for (vector<double>::iterator walk = everageDistance.begin();
 			walk != everageDistance.end(); walk++) {
-		if (*(walk) < 0.85)
+		if (*(walk) < ScalD)
 			fout << "M";
 		else
 			fout << ".";
@@ -143,7 +147,7 @@ void MobiSaver::mob_stanD(vector<double> Scale_distance) {
 
 	for (vector<double>::iterator walk = Scale_distance.begin();
 			walk != Scale_distance.end(); walk++) {
-		if (*(walk) > 0.09)
+		if (*(walk) > StandD)
 			fout << "M";
 		else
 			fout << ".";
@@ -179,7 +183,7 @@ void MobiSaver::mob_aPHI(vector<double> angle_PHI) {
 
 	for (vector<double>::iterator walk = angle_PHI.begin();
 			walk != angle_PHI.end(); walk++) {
-		if (*(walk) > 20)
+		if (*(walk) > angPHI)
 			fout << "M";
 		else
 			fout << ".";
@@ -215,7 +219,7 @@ void MobiSaver::mob_aPSI(vector<double> angle_PSI) {
 
 	for (vector<double>::iterator walk = angle_PSI.begin();
 			walk != angle_PSI.end(); walk++) {
-		if (*(walk) > 20)
+		if (*(walk) > angPSI)
 			fout << "M";
 		else
 			fout << ".";
@@ -293,7 +297,7 @@ void MobiSaver::mob_eveScalD_filtSecS(vector<double> everageDistance,
 	//altrimenti diventa fisso
 	while (everage != everageDistance.end() || secStruct != mobSecS.end()) {
 
-		if (*(everage) < 0.85 && *(secStruct) != '.')
+		if (*(everage) < ScalD && *(secStruct) != '.')
 			fout << "M";
 		else
 			fout << ".";
@@ -347,7 +351,7 @@ void MobiSaver::mob_eveScalD_filteredByPHI_PSI_standD(
 
 	for (vector<double>::iterator walk = everageDistance.begin();
 			walk != everageDistance.end(); walk++) {
-		if (*(walk) < 0.85)
+		if (*(walk) < ScalD)
 			vettoreSupporto.push_back("M");
 		else
 			vettoreSupporto.push_back(".");
@@ -380,13 +384,13 @@ void MobiSaver::mob_eveScalD_filteredByPHI_PSI_standD(
 			test = test + (*(j));
 
 			if (test.compare(filter1) == 0) {
-				if (*(h) > 20 && *(s) > 20 && *(d) > 0.09 && (*(s - 1) > 20))
+				if (*(h) > angPHI && *(s) > angPSI && *(d) > StandD && (*(s - 1) > angPSI))
 					flag = false;
 
 			} else if (test.compare(filter2) == 0) {
 
-				if (*(h - 2) > 20 && *(s - 2) > 20 && *(d - 2) > 0.09
-						&& (*(h - 1) > 20))
+				if (*(h - 2) > angPHI && *(s - 2) > angPSI && *(d - 2) > StandD
+						&& (*(h - 1) > angPHI))
 					flag = false;
 
 			}
@@ -464,7 +468,7 @@ void MobiSaver::mob_stanD_withMask(vector<double> Scale_distance) {
 
 	for (vector<double>::iterator walk = Scale_distance.begin();
 			walk != Scale_distance.end(); walk++) {
-		if (*(walk) > 0.09)
+		if (*(walk) > StandD)
 			vettoreSupporto.push_back("M");
 		else
 			vettoreSupporto.push_back(".");
@@ -489,12 +493,8 @@ void MobiSaver::mob_stanD_withMask(vector<double> Scale_distance) {
 		while (j != vettoreSupporto.end() && i < 6 && flag) {
 
 			test = test + (*(j));
-			if (verbose)
-				cout << test << endl;
 			iter = map.find(test);
 			if (iter != map.end()) {
-				if (verbose)
-					cout << "Trovato" << test << endl;
 				test = iter->second;
 				flag = false;
 			}

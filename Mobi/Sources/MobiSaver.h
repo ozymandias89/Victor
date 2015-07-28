@@ -49,7 +49,7 @@ class MobiSaver : public Saver{
 public:
 
 	// CONSTRUCTORS/DESTRUCTOR:
-	MobiSaver(ProteinModels __protein,string __output, bool __verbose = false);
+	MobiSaver(ProteinModels __protein,string __output, bool __verbose = false, double __boundSD = 0.85, double __boundStandD = 0.09, double __anglePHI = 20, double __anglePSI = 20);
 	virtual ~MobiSaver();
 
 	// PREDICATES:
@@ -69,6 +69,7 @@ public:
 private:
 	bool verbose;
 	string out;
+	double ScalD, StandD, angPHI, angPSI;
 };
 }
 }

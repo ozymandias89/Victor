@@ -72,8 +72,6 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 	//per ogni modello
 	for (unsigned int i = 0; i < models.size(); i++) {
 
-		if (verbose)
-			cout << "Models number: " << i << endl;
 		models[i].setDSSP(false);
 		vettore_di_supporto = models[i].getDSSP();
 		//cout << "support vector size: " << vettore_di_supporto.size() << endl;

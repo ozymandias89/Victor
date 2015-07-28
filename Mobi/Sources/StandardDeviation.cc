@@ -80,6 +80,8 @@ void StandardDeviation::getCaAtom(Spacer* s, bool flag) {
  */
 vector<double> StandardDeviation::get_everage_distance() {
 
+	if (verbose)
+			cout << "### Start average distance standard deviation ###" << endl;
 	/** vector average Scale Distance*/
 	dist_everage.clear();
 
@@ -98,7 +100,7 @@ vector<double> StandardDeviation::get_everage_distance() {
 
 	if (verbose) {
 		cout << "Number of models: " << models.size() << endl;
-		cout << "Number of atoms in each models: " << num_atomi << endl;
+		cout << "Number of CA atoms in each models: " << num_atomi << endl;
 	}
 
 	//for any models create atom's vector
@@ -152,6 +154,9 @@ vector<double> StandardDeviation::get_everage_distance() {
  */
 vector<double> StandardDeviation::get_standard_deviation() {
 
+	if (verbose)
+				cout << "### Start calculate standard deviation ###" << endl;
+
 	dist_everage.clear();
 	ScD.clear();
 
@@ -170,7 +175,7 @@ vector<double> StandardDeviation::get_standard_deviation() {
 
 	if (verbose) {
 		cout << "Number of models: " << models.size() << endl;
-		cout << "Number of atoms in each models: " << num_atomi << endl;
+		cout << "Number of CA atoms in each models: " << num_atomi << endl;
 	}
 	//scorro i modelli e per ognuno creo il vettore di atomi
 	unsigned int u = 0;
@@ -246,6 +251,9 @@ vector<double> StandardDeviation::get_standard_deviation() {
  */
 vector<double> StandardDeviation::get_StandarDev_angle_PHI() {
 
+	if (verbose)
+				cout << "### Start calculate standard deviation from angle PHI ###" << endl;
+
 	double num_amino = 0;
 	double sum = 0;
 
@@ -253,6 +261,13 @@ vector<double> StandardDeviation::get_StandarDev_angle_PHI() {
 		ERROR("Number of models insufficient", exception)
 	else
 		num_amino = original_models[0].sizeAmino();
+
+	if (verbose) {
+			cout << "Number of models: " << original_models.size() << endl;
+			cout << "Number of amino in each models: " << num_amino << endl;
+		}
+
+
 
 	angle_PHI.clear();
 	vector<vector<double> > misure_PHI(num_amino,
@@ -300,6 +315,9 @@ vector<double> StandardDeviation::get_StandarDev_angle_PHI() {
  */
 vector<double> StandardDeviation::get_StandarDev_angle_PSI() {
 
+	if (verbose)
+					cout << "### Start calculate standard deviation from angle PSI ###" << endl;
+
 	double num_amino = 0;
 	double sum = 0;
 
@@ -307,6 +325,12 @@ vector<double> StandardDeviation::get_StandarDev_angle_PSI() {
 		ERROR("Number of models insufficient", exception)
 	else
 		num_amino = original_models[0].sizeAmino();
+
+	if (verbose) {
+				cout << "Number of models: " << original_models.size() << endl;
+				cout << "Number of amino in each models: " << num_amino << endl;
+			}
+
 
 	angle_PSI.clear();
 	vector<vector<double> > misure_PSI(num_amino,

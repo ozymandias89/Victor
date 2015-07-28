@@ -68,6 +68,12 @@ void sShowHelp() {
 
 	cout << "\t -v  verbose output. \n" << endl;
 	cout << "\t -o [FILE OUTPUT]  Output to file (default stdout)\n" << endl;
+
+	cout << "\t -s arg  Set bound everage scale distance mobility (default is 0.85)\n" << endl;
+	cout << "\t -d arg  Set bound standard deviation mobility (default is 0.09)\n" << endl;
+	cout << "\t -y arg  Set bound angle Phi mobility (default is 20)\n" << endl;
+	cout << "\t -x arg  Set bound angle Psi mobility (default is 20)\n" << endl;
+
 	cout << "\t -h  help" << endl;
 
 	exit(EXIT_SUCCESS);
@@ -77,6 +83,7 @@ void sShowHelp() {
 int main(int argc, char* argv[]) {
 
 	bool v;
+	double ScalD, StandD, anglePHI, anglePSI;
 	string inputFile, outputFile, input;
 
 	//guide with -h option
@@ -100,6 +107,11 @@ int main(int argc, char* argv[]) {
 		ERROR("Error opening input .pdb file.", exception);
 
 	getArg("o", outputFile, argc, argv, "!");
+	getArg("s", ScalD ,argc, argv, 0.85);
+	getArg("d", StandD ,argc, argv, 0.09);
+	getArg("y", anglePHI ,argc, argv, 20);
+	getArg("x", anglePSI ,argc, argv, 20);
+
 	v = getArg("v", argc, argv);
 
 	PdbLoader pl(inFile);    // creates the PdbLoader object
@@ -255,7 +267,7 @@ int main(int argc, char* argv[]) {
 	// 6. MobiSaver object save mobility in output file
 	// --------------------------------------------------
 
-	MobiSaver* saver = new MobiSaver(prot, outputFile, v);
+	MobiSaver* saver = new MobiSaver(prot, outputFile, v, ScalD, StandD , anglePHI, anglePSI);
 	saver->allMobility(ever, SD, ANGLE_PHI, ANGLE_PSI, MOB);
 
 	delete saver;
