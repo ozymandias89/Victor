@@ -68,6 +68,7 @@ void sShowHelp() {
 
 	cout << "\t -v  verbose output. \n" << endl;
 	cout << "\t -o [FILE OUTPUT]  Output to file (default stdout)\n" << endl;
+	cout << "\t -m  load any models \n" << endl;
 
 	cout << "\t -s arg  Set bound everage scale distance mobility (default is 0.85)\n" << endl;
 	cout << "\t -d arg  Set bound standard deviation mobility (default is 0.09)\n" << endl;
@@ -82,7 +83,7 @@ void sShowHelp() {
 
 int main(int argc, char* argv[]) {
 
-	bool v;
+	bool v, models;
 	double ScalD, StandD, anglePHI, anglePSI;
 	string inputFile, outputFile, input;
 
@@ -96,6 +97,16 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	getArg("o", outputFile, argc, argv, "!");
+	getArg("s", ScalD ,argc, argv, 0.85);
+	getArg("d", StandD ,argc, argv, 0.09);
+	getArg("y", anglePHI ,argc, argv, 20);
+	getArg("x", anglePSI ,argc, argv, 20);
+
+	models = getArg("m",argc, argv);
+	v = getArg("v", argc, argv);
+
+
 	cout << "Welcome to Mobi!" << endl;
 
 	//loan pdb file from input
@@ -105,14 +116,6 @@ int main(int argc, char* argv[]) {
 
 	if (!inFile)
 		ERROR("Error opening input .pdb file.", exception);
-
-	getArg("o", outputFile, argc, argv, "!");
-	getArg("s", ScalD ,argc, argv, 0.85);
-	getArg("d", StandD ,argc, argv, 0.09);
-	getArg("y", anglePHI ,argc, argv, 20);
-	getArg("x", anglePSI ,argc, argv, 20);
-
-	v = getArg("v", argc, argv);
 
 	PdbLoader pl(inFile);    // creates the PdbLoader object
 
@@ -128,21 +131,22 @@ int main(int argc, char* argv[]) {
 	// 1. ask how much models load in protein
 	// --------------------------------------------------
 
-	do {
-		cout << "This file include: ";
-		cout << pl.getMaxModels() << endl;
+//	do {
+//		cout << "This file include: ";
+//		cout << pl.getMaxModels() << endl;
+//
+//		cout << "Do you want load all models? [y/n]" << endl;
+//		getline(cin, input);
+//		//		cin >> input;
+//
+//	} while ((strcmp(input.c_str(), "y")) != 0
+//			&& (strcmp(input.c_str(), "n")) != 0);
 
-		cout << "Do you want load all models? [y/n]" << endl;
-		getline(cin, input);
-		//		cin >> input;
-
-	} while ((strcmp(input.c_str(), "y")) != 0
-			&& (strcmp(input.c_str(), "n")) != 0); //(!cin.fail() && input != 'y' && input != 'n');
 
 	if (!v)
 		cout << "\nLOAD..." << endl;
 
-	if ((strcmp(input.c_str(), "y")) == 0) {
+	if (!models) {
 		prot.load(pl);
 	} else {
 		prot.loadSameModels(pl);
