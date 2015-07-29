@@ -1,0 +1,23 @@
+						                                  
+						                                  MOBI
+
+
+Mobi è un software che permette di caricare un file pdb creato con tecnologia NMR e di calcolare la mobilità delle catene amino acidiche all'interno della proteina.
+Il file pdb può essere caricato in toto o in parte caricando solo alcuni modelli. Le parti mobili della proteina sono calcolate con diverse metriche fra cui l'everage scale distance, la standard deviation scale distance, gli angoli phi, psi, e varie maschere logiche.
+
+Mobi è una directory di Victor, al suo interno si trova la directory APP la quale contiene il file mobi.cc che contiene il main.
+Una volta compilato il progetto l'eseguibile si troverà in /Victor/bin/ con il nome di mobi.
+Per eseguire mobi lanciamolo con l'option senza opzioni o con l'option -h. Apparirà il menù di aiuto che spiega come utilizzarlo. I file in output si troveranno nella cartella /Victor/Mobi/data. Si ricorda che i file in output debbono essere cancellati se si vuole rieseguire il programma, se così non fosse l'output poterebbe essere aggiunto in append al file.
+
+Requisiti: NMR pdb file.
+Esecuzione: ./mobi pathpdbfile (in aggiunta le opzioni)
+Opzioni:	-o	nomefile di otput per personalizzare il nome file in output di default è 				“stdout”
+		-v	per settare la verbosità di tutti gli oggetti presenti
+		-m	per caricare un numero limitato di modelli e non tutti quelli presenti nel 				file
+		-s	modifica il valore di mobilità dell'everage scaled distance
+		-d	modifica il valore di mobilità a standard deviation della scaled distance
+		-y	modifica il valore di mobilità per l'angolo PHI
+		-x	modifica il valore di mobilità per l'angolo PSI
+		-h	help
+
+Output: L'output saranno 2 file, il primo sarà un file fasta con le diverse misurazioni di mobilità mente il secondo sarà un file pdb con i modelli salvati e le ultime colonne modificaate con la standard deviation e l'average scaled distance * 100. (Necessario controllare la correttezza del calcolo della mobilità DSSP).
