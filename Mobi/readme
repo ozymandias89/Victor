@@ -2,32 +2,32 @@
 						  MOBI
 
 
-Mobi è un software che permette di caricare un file pdb creato con tecnologia NMR 
-e di calcolare la mobilità delle catene amino acidiche all'interno della proteina.
-Il file pdb può essere caricato in toto o in parte caricando solo alcuni modelli. 
-Le parti mobili della proteina sono calcolate con diverse metriche fra cui l'everage scale distance, 
-la standard deviation scale distance, gli angoli phi, psi, e varie maschere logiche.
+Software Mobi load file pdb. The pdb file must be created with NMR technology. Mobi can calculate
+amino acid's residue mobility inside protein.
+The software can load the pdb file in its entirety (all models of protein), or in any models. 
+Different metrics evaluate mobility part of the protein for exemple the everage scale distance,
+standard deviation, scale distance, the evaluation of angle phi, psi, and various logic mask.
 
-Mobi è una directory di Victor, al suo interno si trova la directory APP la quale contiene il file mobi.cc 
-che contiene il main.
-Una volta compilato il progetto l'eseguibile si troverà in /Victor/bin/ con il nome di mobi.
-Per eseguire mobi lanciamolo con l'option senza opzioni o con l'option -h. 
-Apparirà il menù di aiuto che spiega come utilizzarlo. 
-I file in output si troveranno nella cartella /Victor/Mobi/data. 
-Si ricorda che i file in output debbono essere cancellati se si vuole rieseguire il programma, 
-se così non fosse l'output poterebbe essere aggiunto in append al file.
+Mobi is a Victor directory, inside are located directory APP which include mobi.cc file that 
+include main.
+After compiling the project the exeguible file are located in /Victor/bin/ with mobi's name.
+For execute Mobi launch with no option or with option -h. 
+A help menù will appear that show how to use the program. 
+The output file will locate in directory /Victor/Mobi/data. 
+Remind that the output file must be deleted if you want re execute the program, 
+if this were not the case, the output file could be added in append to the file.
 
-Requisiti: NMR pdb file.
-Esecuzione: ./mobi pathpdbfile (in aggiunta le opzioni)
-Opzioni:	-o	nomefile di otput per personalizzare il nome file in output di default è “stdout”
-		-v	per settare la verbosità di tutti gli oggetti presenti
-		-m	per caricare un numero limitato di modelli e non tutti quelli presenti nel file
-		-s	modifica il valore di mobilità dell'everage scaled distance
-		-d	modifica il valore di mobilità a standard deviation della scaled distance
-		-y	modifica il valore di mobilità per l'angolo PHI
-		-x	modifica il valore di mobilità per l'angolo PSI
+Requirement: NMR pdb file.
+Execution: ./mobi pathpdbfile (opzion addition)
+Option:	-o	nomefile for output to personalize the name of the output file, default is “stdout”
+		-v	set verbose of all object
+		-m	to load a restricted numbers of models and not all present models in the file
+		-s	modify value of mobility of everage scaled distance
+		-d	modify value of mobility of standard deviation of scaled distance
+		-y	modify value of mobility of angle PHI
+		-x	modify value of mobility of angle PSI
 		-h	help
 
-Output: L'output saranno 2 file, il primo sarà un file fasta con le diverse misurazioni di mobilità,
-il secondo sarà un file pdb con i modelli salvati e le ultime colonne modificaate con la standard deviation e 
-l'average scaled distance * 100. (Necessario controllare la correttezza del calcolo della mobilità DSSP).
+Output: The output will be 2 file, the first will be a fasta file with different metrics to estimate the mobility,
+the second will be a pdb file with save model and the last columns changed whith standard deviation misure and 
+the average scaled distance * 100.
