@@ -63,7 +63,7 @@ protected:
 	void testPopulation() {
 
 		cout << "Prima prova" << endl;
-		TestProteinModels* test = new ProteinModels();
+		TestProteinModels* test = new TestProteinModels();
 		delete test;
 	}
 
