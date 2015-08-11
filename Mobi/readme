@@ -19,8 +19,11 @@ Remind that the output file must be deleted if you want rerun the program,
 if this were not the case, the output file could be added in append to the file.
 
 ==Usage==
-Requirement: NMR pdb file.
+Requirement: 
+Input: NMR pdb file.
+
 Execution: ./mobi pathpdbfile (opzion addition)
+
 Option:		-o	namefile for output to personalize the name of the output file, default is “stdout”
 		-v	set verbose of all object
 		-c 	set chain of protein to read (default is first chain)
@@ -31,3 +34,5 @@ Option:		-o	namefile for output to personalize the name of the output file, defa
 		-x	modify value of mobility of angle PSI
 		-h	help
 
+Output: Output is two file, the first will be fasta file with different mobility metrics, the second will be 
+	pdb file with save models and the last column changed with standard deviation and average scaled distance * 100.
