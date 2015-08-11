@@ -4,7 +4,8 @@
 
 Software Mobi load file pdb. The pdb file must be created with NMR technology. Mobi can calculate
 amino acid's residue mobility inside protein.
-The software can load the pdb file in its entirety (all models of protein), or in any models. 
+The software can load the pdb file in its entirety (all models of protein), or in any models.
+The user can choose the chain to load, the default is firdt chain of pdb file.
 Different metrics evaluate mobility part of the protein for exemple the everage scale distance,
 standard deviation, scale distance, the evaluation of angle phi, psi, and various logic mask.
 
