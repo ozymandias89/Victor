@@ -72,6 +72,7 @@ void sShowHelp() {
 	cout << "\t -o [FILE OUTPUT]  Output to file (default stdout)\n" << endl;
 	cout << "\t -m  load any models \n" << endl;
 
+	cout << "\t -c arg  Chain identifier to read (default is first chain)\n" << endl;
 	cout << "\t -s arg  Set bound everage scale distance mobility (default is 0.85)\n" << endl;
 	cout << "\t -d arg  Set bound standard deviation mobility (default is 0.09)\n" << endl;
 	cout << "\t -y arg  Set bound angle Phi mobility (default is 20)\n" << endl;
@@ -87,7 +88,7 @@ int main(int argc, char* argv[]) {
 
 	bool v, models;
 	double ScalD, StandD, anglePHI, anglePSI;
-	string inputFile, outputFile, input;
+	string inputFile, outputFile, input, chainID;
 
 	//guide with -h option
 	if (getArg("h", argc, argv)) {
@@ -100,6 +101,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	getArg("o", outputFile, argc, argv, "!");
+	getArg("c", chainID, argc, argv, "!");
 	getArg("s", ScalD ,argc, argv, 0.85);
 	getArg("d", StandD ,argc, argv, 0.09);
 	getArg("y", anglePHI ,argc, argv, 20);
@@ -144,6 +146,25 @@ int main(int argc, char* argv[]) {
 //	} while ((strcmp(input.c_str(), "y")) != 0
 //			&& (strcmp(input.c_str(), "n")) != 0);
 
+
+	 // User selected chain
+	if (chainID != "!") {
+		if (chainID.size() > 1)
+			ERROR("You can choose only 1 chain", error);
+		pl.setChain(chainID[0]);
+		pl.checkAndSetChain();
+		if (v)
+			cout << "Selected chain: " << chainID[0] << endl;
+	}	// First chain
+	else {
+		if (pl.getAllChains().size() > 0) {
+			pl.setChain(pl.getAllChains()[0]);
+			if (v)
+				cout << "Selected chain: " << pl.getAllChains()[0] << endl;
+			chainID = pl.getAllChains()[0];
+		} else if (v)
+			ERROR("No chains found. Quit...", exception);
+	}
 
 	if (!v)
 		cout << "\nLOAD..." << endl;
