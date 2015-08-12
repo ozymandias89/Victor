@@ -61,7 +61,15 @@ public:
 
 protected:
 	 /** @brief Test for parse/write. */
-	void testStructure() {cout << "ciao" << endl;}
+	void testStructure() {
+
+
+
+
+
+
+
+	}
 
 };
 #endif /* MOBI_TESTS_TESTSECONDARYSTRUCTURE_H_ */

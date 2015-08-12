@@ -61,7 +61,7 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 	//create a support vector to get secondary structure
 	vector<set<char> > vettore_di_supporto(num_amino, set<char>());
 
-	//create a vector for manipulated all amiocid's chars
+	//create a vector for manipulated all amiocid's structure
 	vector<vector<char> > sec_Structures(num_amino,
 			vector<char>(models.size()));
 
@@ -69,16 +69,16 @@ vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 		cout << "\nStart procedure select secondary structure... " << endl;
 		cout << "Model size: " << models.size() << endl;
 	}
-	//per ogni modello
+	//for each models
 	for (unsigned int i = 0; i < models.size(); i++) {
 
 		models[i].setDSSP(false);
 		vettore_di_supporto = models[i].getDSSP();
 		//cout << "support vector size: " << vettore_di_supporto.size() << endl;
 
-		//scorro il vettore di set
+		//iteration on vector of set
 		for (unsigned int j = 0; j < num_amino; j++) {
-			//mi tiro fuori il primo valore char e lo metto in un vettore di char
+			//extract first char value and push it in vector char
 			sec_Structures[j][i] = (*(vettore_di_supporto[j].begin()));
 
 		}

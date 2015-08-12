@@ -180,9 +180,9 @@ int main(int argc, char* argv[]) {
 	// --------------------------------------------------
 
 	if (outputFile != "!") {
-		outputFile = "./Mobi/data/" + outputFile;
+		outputFile = "../Mobi/data/" + outputFile;
 	} else
-		outputFile = "./Mobi/data/stdout";
+		outputFile = "../Mobi/data/stdout";
 
 	// --------------------------------------------------
 	// 3. method that save in separated file each models
@@ -199,7 +199,7 @@ int main(int argc, char* argv[]) {
 	// 4. TmScore object make super imposition of each models
 	// ------------------------------------------------------
 
-	TmScore tm("./Mobi/data/TMscore", outputFile, v);
+	TmScore tm("../Mobi/data/TMscore", outputFile, v);
 
 	Protein* traslata = new Protein();
 
