@@ -45,18 +45,22 @@ public:
 		CppUnit::TestSuite *suiteOfTests = new CppUnit::TestSuite(
 				"TestProteinModels");
 
-//		suiteOfTests->addTest(
-//				new CppUnit::TestCaller<TestProteinModels>(
-//						"Test1 - Populate the ProteinModels",
-//						&TestProteinModels::testPopulation));
-//		suiteOfTests->addTest(
-//						new CppUnit::TestCaller<TestProteinModels>(
-//								"Test2 - Correct aminoacid sequence",
-//								&TestProteinModels::aminoSequence));
+		suiteOfTests->addTest(
+				new CppUnit::TestCaller<TestProteinModels>(
+						"Test1 - Populate the ProteinModels",
+						&TestProteinModels::testPopulation));
+		suiteOfTests->addTest(
+						new CppUnit::TestCaller<TestProteinModels>(
+								"Test2 - Correct aminoacid sequence",
+								&TestProteinModels::aminoSequence));
 		suiteOfTests->addTest(
 								new CppUnit::TestCaller<TestProteinModels>(
 										"Test3 - Correct load protein rototralated",
 										&TestProteinModels::rototraslated));
+		suiteOfTests->addTest(
+						new CppUnit::TestCaller<TestProteinModels>(
+								"Test4 - Save protein models rototraslated",
+								&TestProteinModels::printModels));
 
 		return suiteOfTests;
 	}
@@ -72,47 +76,69 @@ protected:
 	 /** @brief Test for parse/write. */
 	void testPopulation() {
 
+		// --------------------------------------------------
+		// 1. Initialization
+		// --------------------------------------------------
+
 		ifstream inputFile("/home/riccardo/mobi/1AB2_input.pdb");
 		PdbLoader pl(inputFile);
 		pl.setVerbose();
 		ProteinModels test;
 		test.setVerbose();
 
+		// --------------------------------------------------
+		// 2. Load
+		// --------------------------------------------------
 		test.load(pl);
 
+		// --------------------------------------------------
+		// 3. Test
+		// --------------------------------------------------
 		cout << endl << "Models in pdb file is: " << pl.getMaxModels() << "\n"
-		                        << "Models load is" << test.original_models.size() << endl;
-				CPPUNIT_ASSERT( pl.getMaxModels() == test.original_models.size() );
+				<< "Models load is" << test.original_models.size() << endl;
+		CPPUNIT_ASSERT(pl.getMaxModels() == test.original_models.size());
 
 	}
 
 	void aminoSequence() {
 
-			unsigned d = 0;
-			string aminoaced_sequence="GSGNSLEKHSWYHGPVSRNAAEYLLSSGINGSFLVRESESSPGQRSISLRYEGRVYHYRINTASDGKLYVSSESRFNTLAELVHHHSTVADGLITTLHYPAPKRGIHRD";
-			string amino;
-			ifstream inputFile("/home/riccardo/mobi/1AB2_input.pdb");
-			PdbLoader pl(inputFile);
-			pl.setVerbose();
-			ProteinModels* test=new ProteinModels;
-			test->setVerbose();
+		// --------------------------------------------------
+		// 1. Initialization
+		// --------------------------------------------------
+		unsigned d = 0;
+		string aminoaced_sequence =
+				"GSGNSLEKHSWYHGPVSRNAAEYLLSSGINGSFLVRESESSPGQRSISLRYEGRVYHYRINTASDGKLYVSSESRFNTLAELVHHHSTVADGLITTLHYPAPKRGIHRD";
+		string amino;
+		ifstream inputFile("/home/riccardo/mobi/1AB2_input.pdb");
+		PdbLoader pl(inputFile);
+		pl.setVerbose();
+		ProteinModels* test = new ProteinModels;
+		test->setVerbose();
 
+		// --------------------------------------------------
+		// 2. Load
+		// --------------------------------------------------
+		pl.setModel(1);
+		pl.checkModel();
+		test->Protein::load(pl);
 
-			pl.setModel(1);
-			pl.checkModel();
-			test->Protein::load(pl);
+		for (unsigned int i = 0; i < test->getSpacer(d)->sizeAmino(); i++)
+			amino += (test->getSpacer(d)->getAmino(i).getType1L());
 
-			for (unsigned int i = 0; i < test->getSpacer(d)->sizeAmino(); i++)
-						amino+= (test->getSpacer(d)->getAmino(i).getType1L());
+		// --------------------------------------------------
+		// 3. Test
+		// --------------------------------------------------
+		cout << endl << "Sequence in pdb file is: " << aminoaced_sequence
+				<< "\n" << "Sequence load is" << amino << endl;
+		CPPUNIT_ASSERT(aminoaced_sequence == amino);
 
-			cout << endl << "Sequence in pdb file is: " << aminoaced_sequence << "\n"
-			                        << "Sequence load is" << amino << endl;
-					CPPUNIT_ASSERT( aminoaced_sequence == amino );
-
-		}
+	}
 
 	void rototraslated() {
 
+		// --------------------------------------------------
+		// 1. Initialization
+		// --------------------------------------------------
 		unsigned int d = 0;
 
 		ifstream inputFile("/home/riccardo/mobi/1AB2_input.pdb");
@@ -122,10 +148,20 @@ protected:
 		ProteinModels test;
 		test.setVerbose();
 
+		// --------------------------------------------------
+		// 2. Load
+		// --------------------------------------------------
 		test.loadSameModels(pl);
+
+		// --------------------------------------------------
+		// 2. Save
+		// --------------------------------------------------
 
 		test.save(outputFile);
 
+		// --------------------------------------------------
+		// 2. Rototranslation
+		// --------------------------------------------------
 		TmScore tm("../Mobi/data/TMscore", outputFile, true);
 
 		Protein* traslata = new Protein();
@@ -143,13 +179,68 @@ protected:
 				test.addModels(*(test.getSpacer(j)));
 
 			}
+		// --------------------------------------------------------
+		// 2. Test save model vector that contain couple of models,
+		//    the first rototranslate, the second is the model
+		// --------------------------------------------------------
 		cout << endl << "Models load is: " << test.original_models.size()
 				<< "\n"
-				<< "Models load whit models rototraslated (all models imposed on all models) "
+				<< "Models load whit models rototranslated (all models imposed on all models) "
 				<< test.models.size() << endl;
 		unsigned int test_model_size = (test.original_models.size()
 				* (test.original_models.size() - 1));
 		CPPUNIT_ASSERT(test_model_size == test.models.size());
+
+	}
+
+	void printModels() {
+
+		// --------------------------------------------------
+		// 1. Initialization
+		// --------------------------------------------------
+		unsigned int d = 0;
+
+		ifstream inputFile("/home/riccardo/mobi/1AB2_input.pdb");
+		string outputFile = "../Mobi/data/stdout";
+		PdbLoader pl(inputFile);
+		pl.setVerbose();
+		ProteinModels test;
+		test.setVerbose();
+		// --------------------------------------------------
+		// 2. Load
+		// --------------------------------------------------
+		test.loadSameModels(pl);
+		// --------------------------------------------------
+		// 2. Save
+		// --------------------------------------------------
+		test.save(outputFile);
+		// --------------------------------------------------
+		// 2. Rototraslation
+		// --------------------------------------------------
+		TmScore tm("../Mobi/data/TMscore", outputFile, true);
+
+		Protein* traslata = new Protein();
+
+		for (unsigned int i = 0; i < test.size() - 1; i++)
+			for (unsigned int j = i + 1; j < test.size(); j++) {
+				traslata = tm.TmImpose(outputFile + (itosDEF(i)),
+						outputFile + (itosDEF(j)));
+				if (traslata != NULL) {
+
+					test.addModels(*(traslata->getSpacer(d)));
+				} else
+					ERROR("Error in the creation of shift models.", exeption);
+
+				test.addModels(*(test.getSpacer(j)));
+
+			}
+		// ------------------------------------------------------
+		// 5. save model vector that contain couple of models,
+		//    the first rototranslate, the second is the model
+		// ------------------------------------------------------
+
+		test.printModels(outputFile);
+		cout << endl << "File saved in folder data: " << endl;
 
 	}
 
