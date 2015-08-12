@@ -67,7 +67,7 @@ void StandardDeviation::getCaAtom(Spacer* s, bool flag) {
 			this->CaVector2.push_back(a->getAtom(i));
 
 		if (a->getAtom(i).getCode() != CA)
-			ERROR("L'atomo trovato non è un carbonio alfa.", exception);
+			ERROR("Atom find is not CA atom.", exception);
 
 	}
 

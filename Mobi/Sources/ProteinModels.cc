@@ -102,7 +102,7 @@ unsigned int ProteinModels::selectModels(PdbLoader& pl) {
 	unsigned int modelNum;
 	string input;
 
-	cout << "Quanti ne vuoi caricare? Inserisci un valore compreso tra 2 e ";
+	cout << "How much do you want load? Insert a value between 2 and ";
 	cout << pl.getMaxModels() << endl;
 
 	getline(cin, input);
@@ -128,13 +128,13 @@ unsigned int ProteinModels::selectModels(PdbLoader& pl) {
  */
 void ProteinModels::loadSameModels(PdbLoader& pl) {
 
-	unsigned int d;
+	unsigned int d=0;
 	unsigned int modelNum = selectModels(pl);
 
 	for (unsigned int i = 1; i <= modelNum; i++) {
 		if (verbose)
 			cout << "\t>>>model#" << i << endl;
-		pl.setModel(i);	//dal pdb loader scelgo il modello da caricare nella proteina
+		pl.setModel(i);	//from pdb loader choose model to load in the protein
 		pl.checkModel();
 		this->Protein::load(pl);          // creates the Protein object
 	}
