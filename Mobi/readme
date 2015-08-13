@@ -37,4 +37,4 @@ Option:
 
 Output: Output is two files, the first will be a fasta file with different mobility metrics, the second will be 
 	a pdb file with save models and the last column changed with standard deviation and average scaled 
-		distance * 100.
+		distance x 100.
