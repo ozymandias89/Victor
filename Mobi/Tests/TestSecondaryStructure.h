@@ -61,7 +61,7 @@ public:
 	}
 
 protected:
-	 /** @brief Test for parse/write. */
+	 /** @brief Test Secondary Structure */
 	void testStructure() {
 
 		// --------------------------------------------------

@@ -294,8 +294,8 @@ void MobiSaver::mob_eveScalD_filtSecS(vector<double> everageDistance,
 	vector<double>::iterator everage = everageDistance.begin();
 	vector<char>::iterator secStruct = mobSecS.begin();
 
-	//facciamo che se la media è fissa resta fisso a prescindere, se è mobile resta mobile se la struttura secondaria dice che è mobile
-	//altrimenti diventa fisso
+	//If average is fix stay fix, if average is mobile and DSSP is mobile then change
+	//to fix
 	while (everage != everageDistance.end() || secStruct != mobSecS.end()) {
 
 		if (*(everage) < ScalD && *(secStruct) != '.')

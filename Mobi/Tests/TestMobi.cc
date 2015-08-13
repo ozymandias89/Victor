@@ -24,6 +24,8 @@
 #include <TestProteinModels.h>
 #include <TestStandardDeviation.h>
 #include <TestSecondaryStructure.h>
+#include <TestSaver.h>
+
 
 using namespace Victor::Mobi;
 using namespace Victor::Biopool;
@@ -33,9 +35,10 @@ int main() {
 	CppUnit::TextUi::TestRunner runner;
 
 	cout << "Creating Test Suites:" << endl;
-	//runner.addTest(TestProteinModels::suite());
-	//runner.addTest(TestStandardDeviation::suite());
+	runner.addTest(TestProteinModels::suite());
+	runner.addTest(TestStandardDeviation::suite());
 	runner.addTest(TestSecondaryStructure::suite());
+	runner.addTest(TestSaver::suite());
 
 	cout << "Running the unit tests. " << endl;
 	runner.run();

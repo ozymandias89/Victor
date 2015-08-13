@@ -73,7 +73,7 @@ public:
 	}
 
 protected:
-	 /** @brief Test for parse/write. */
+	 /** @brief Test load */
 	void testPopulation() {
 
 		// --------------------------------------------------
@@ -99,7 +99,7 @@ protected:
 		CPPUNIT_ASSERT(pl.getMaxModels() == test.original_models.size());
 
 	}
-
+	 /** @brief Test aminoSequence */
 	void aminoSequence() {
 
 		// --------------------------------------------------
@@ -133,7 +133,7 @@ protected:
 		CPPUNIT_ASSERT(aminoaced_sequence == amino);
 
 	}
-
+	/** @brief Test function of TmScore */
 	void rototraslated() {
 
 		// --------------------------------------------------
@@ -192,7 +192,7 @@ protected:
 		CPPUNIT_ASSERT(test_model_size == test.models.size());
 
 	}
-
+	/** @brief Test function printmodels */
 	void printModels() {
 
 		// --------------------------------------------------
