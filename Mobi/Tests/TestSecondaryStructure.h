@@ -28,6 +28,7 @@
 #include <cppunit/TestCase.h>
 
 #include "ProteinModels.h"
+#include "SecondaryStructure.h"
 
 using namespace std;
 using namespace Victor::Mobi;
@@ -63,11 +64,47 @@ protected:
 	 /** @brief Test for parse/write. */
 	void testStructure() {
 
+		// --------------------------------------------------
+		// 1. Initialization
+		// --------------------------------------------------
+
+		ifstream inputFile("/home/riccardo/mobi/1AB2_input.pdb");
+		PdbLoader pl(inputFile);
+		pl.setVerbose();
+		ProteinModels test;
+		test.setVerbose();
+
+		// --------------------------------------------------
+		// 2. Load
+		// --------------------------------------------------
+		test.loadSameModels(pl);
+
+		// --------------------------------------------------
+		// 3. Secondary Structure
+		// --------------------------------------------------
+
+		SecondaryStructure sstr(test, true);
+
+		vector< vector<char> > sec_structures;
+		sec_structures = sstr.getSecStructFromModels();
+
+		vector<char> MOB;
+			MOB = sstr.getMobilitySecondaryStructure();
 
 
+		// ----------------------------------------------------
+		// 4. Print vector o secondary structure for amino acid
+		// ----------------------------------------------------
+			cout << "\nSECONDARY STRUCTURE" << endl;
+			for (unsigned int i=0; i<109 ; i++){
+				cout << "Print secondary structure amino acid number #" << i << endl;
+				for (unsigned int j = 0; j < test.original_models.size(); j++)
+					cout << sec_structures[i][j] << endl;
 
+			cout << "Final valutation of amino acid #" << i << " is " << MOB[i] <<endl;
 
-
+			}
+			cout << "\n" << endl;
 
 	}
 

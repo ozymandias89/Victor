@@ -42,6 +42,7 @@ public:
 	virtual ~SecondaryStructure();
 
 	// PREDICATES:
+	vector< vector<char> >getSecStructFromModels();
 	vector<char> getMobilitySecondaryStructure();
 
 private:

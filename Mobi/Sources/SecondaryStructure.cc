@@ -45,6 +45,45 @@ SecondaryStructure::SecondaryStructure(const ProteinModels& modelli,
 SecondaryStructure::~SecondaryStructure() {
 }
 
+vector< vector<char> > SecondaryStructure::getSecStructFromModels(){
+
+	unsigned int num_amino = 0;
+		if (models.size() != 0)
+			num_amino = models[0].sizeAmino();
+		else
+			ERROR("Nothing models in the protein, remember load models.", exception);
+
+		//create a support vector to get secondary structure
+		vector<set<char> > vettore_di_supporto(num_amino, set<char>());
+
+		//create a vector for manipulated all amiocid's structure
+		vector< vector<char> > sec_Structures(num_amino,
+				vector<char>(models.size()));
+
+		if (verbose) {
+			cout << "\nStart procedure select secondary structure... " << endl;
+			cout << "Model size: " << models.size() << endl;
+		}
+		//for each models
+		for (unsigned int i = 0; i < models.size(); i++) {
+
+			models[i].setDSSP(false);
+			vettore_di_supporto = models[i].getDSSP();
+			//cout << "support vector size: " << vettore_di_supporto.size() << endl;
+
+			//iteration on vector of set
+			for (unsigned int j = 0; j < num_amino; j++) {
+				//extract first char value and push it in vector char
+				sec_Structures[j][i] = (*(vettore_di_supporto[j].begin()));
+
+			}
+
+		}
+
+return sec_Structures;
+
+}
+
 /**
  * get the mobility analyzing secondary structures
  * @return vector<char> , return vector of mobility from Secondary Structure
@@ -52,38 +91,16 @@ SecondaryStructure::~SecondaryStructure() {
 vector<char> SecondaryStructure::getMobilitySecondaryStructure() {
 
 	mobility.clear();
+	vector< vector<char> > sec_Structures;
+
 	unsigned int num_amino = 0;
 	if (models.size() != 0)
 		num_amino = models[0].sizeAmino();
 	else
 		ERROR("Nothing models in the protein, remember load models.", exception);
 
-	//create a support vector to get secondary structure
-	vector<set<char> > vettore_di_supporto(num_amino, set<char>());
 
-	//create a vector for manipulated all amiocid's structure
-	vector<vector<char> > sec_Structures(num_amino,
-			vector<char>(models.size()));
-
-	if (verbose) {
-		cout << "\nStart procedure select secondary structure... " << endl;
-		cout << "Model size: " << models.size() << endl;
-	}
-	//for each models
-	for (unsigned int i = 0; i < models.size(); i++) {
-
-		models[i].setDSSP(false);
-		vettore_di_supporto = models[i].getDSSP();
-		//cout << "support vector size: " << vettore_di_supporto.size() << endl;
-
-		//iteration on vector of set
-		for (unsigned int j = 0; j < num_amino; j++) {
-			//extract first char value and push it in vector char
-			sec_Structures[j][i] = (*(vettore_di_supporto[j].begin()));
-
-		}
-
-	}
+	sec_Structures = getSecStructFromModels();
 
 	char test;
 	bool flag;
