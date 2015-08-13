@@ -2,18 +2,18 @@
 						  MOBI
 
 
-Software Mobi load file pdb. The pdb file must be created with NMR technology. Mobi can calculate
+Mobi software allows to load pdb file. Pdb file must be created with NMR technology. Mobi can calculate
 amino acid's residue mobility inside protein.
-The software can load the pdb file in its entirety (all models of protein), or in any models.
-The user can choose the chain to load, the default is firdt chain of pdb file.
-Different metrics evaluate mobility part of the protein for exemple the everage scale distance,
+The software can load the pdb file entirely (all models of protein), or just partly (only selected models).
+The user can choose the chain to load, the default is first chain of pdb file.
+Different metrics evaluate mobility part of the protein for example the everage scale distance,
 standard deviation, scale distance, the evaluation of angle phi, psi, and various logic mask.
 
-Mobi is a Victor folder, inside are located subfolder APP which include mobi.cc file that 
-include main.
-After compiling project the exeguible file are located in /Victor/bin/ with mobi's name.
+Mobi is a Victor folder, inside are located subfolder APP which includes mobi.cc file that 
+includes main.
+After compiling project the executable files are located in /Victor/bin/ with mobi's name.
 For execute Mobi launch with no option or with option -h. 
-A help menù will appear that show how to use the program. 
+A help menu will appear showing how to use the program. 
 The output file will locate in directory /Victor/Mobi/data. 
 Remind that the output file must be deleted if you want rerun the program, 
 if this were not the case, the output file could be added in append to the file.
@@ -22,10 +22,11 @@ if this were not the case, the output file could be added in append to the file.
 Requirement: 
 Input: NMR pdb file.
 
-Execution: ./mobi pathpdbfile (opzion addition)
+Execution: ./mobi pathpdbfile (options in addition)
 
-Option:		-o	namefile for output to personalize the name of the output file, default is “stdout”
-		-v	set verbose of all object
+Option:		
+		-o	namefile for output to personalize the name of the output file, default is “stdout”
+		-v	set verbosity of all object
 		-c 	set chain of protein to read (default is first chain)
 		-m	to load a restricted numbers of models and not all present models in the file
 		-s	modify value of mobility of average scaled distance
@@ -34,5 +35,5 @@ Option:		-o	namefile for output to personalize the name of the output file, defa
 		-x	modify value of mobility of angle PSI
 		-h	help
 
-Output: Output is two file, the first will be fasta file with different mobility metrics, the second will be 
-	pdb file with save models and the last column changed with standard deviation and average scaled distance * 100.
+Output: Output is two files, the first will be a fasta file with different mobility metrics, the second will be 
+		a pdb file with save models and the last column changed with standard deviation and average scaled distance * 100.
