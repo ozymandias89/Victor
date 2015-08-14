@@ -45,6 +45,13 @@ SecondaryStructure::SecondaryStructure(const ProteinModels& modelli,
 SecondaryStructure::~SecondaryStructure() {
 }
 
+/**
+ * get the secondary structure. Return is a vector of vector of char where vector[i][j]
+ * 'i' is a specific amino acid
+ * 'j' is a specific model
+ * and char is a letter of secondary structure of amino acid 'i' and models 'j'
+ * @return vector< vector<char> >  , return vector of vector of char.
+ */
 vector< vector<char> > SecondaryStructure::getSecStructFromModels(){
 
 	unsigned int num_amino = 0;

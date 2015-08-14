@@ -229,7 +229,7 @@ int main(int argc, char* argv[]) {
 	ever = std.get_everage_distance();
 
 	//print vector
-//	cout << "EVERAGE" << endl;
+//	cout << "AVERAGE" << endl;
 //		for (vector<double>::iterator everage = ever.begin(); everage != ever.end();
 //				everage++) {
 //			cout << *everage << endl;
